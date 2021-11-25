@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFermentationProbesTable extends Migration
+class CreateProbeAssignmentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateFermentationProbesTable extends Migration
      */
     public function up()
     {
-        Schema::create('fermentation_probes', function (Blueprint $table) {
+        Schema::create('probe_assignment', function (Blueprint $table) {
             $table->id();
             $table->foreignId("fermentation_id")->constrained("fermentations");
             $table->foreignId("probe_id")->constrained("probes");
@@ -28,6 +28,6 @@ class CreateFermentationProbesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fermentation_probes');
+        Schema::dropIfExists('probe_assignment');
     }
 }

@@ -18,6 +18,7 @@ class CreateStyleCategoriesTable extends Migration
             $table->tinyInteger("number");
             $table->string("name", 64);
             $table->char("style_guide",8);
+            $table->string("description");
             $table->timestamps();
         });
     }
