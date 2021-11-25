@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -11,6 +12,13 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +49,35 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    /**
+     * Get the recipes created by the user.
+     *
+     * @return HasMany
+     */
+    public function recipes()
+    {
+        return $this->hasMany(Recipe::class, "owner_id");
+    }
+
+    /**
+     * Get the fermentations created by the user.
+     *
+     * @return HasMany
+     */
+    public function fermentations()
+    {
+        return $this->hasMany(Fermentation::class, "brewed_by");
+    }
+
+    /**
+     * Get the probes the user has registered.
+     *
+     * @return HasMany
+     */
+    public function probes()
+    {
+        return $this->hasMany(Probe::class, "owner_id");
+    }
 }
