@@ -16,7 +16,7 @@ class CreateStylesTable extends Migration
         Schema::create('styles', function (Blueprint $table) {
             $table->id();
             $table->string("name", 64);
-            $table->foreignId("category_id")->constrained("style_categories");
+            $table->foreignId("style_category_id")->constrained("style_categories");
             $table->char("style_letter", 1);
             $table->string("type", 16);
             $table->decimal("og_min", 6, 5, true);

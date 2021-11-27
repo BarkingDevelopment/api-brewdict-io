@@ -17,6 +17,13 @@ class ProbeState extends Model
      */
     protected $table = 'probe_states';
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
     /*
      * Physical relationships.
      */

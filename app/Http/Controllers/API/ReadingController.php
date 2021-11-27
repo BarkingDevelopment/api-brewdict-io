@@ -25,6 +25,9 @@ class ReadingController extends Controller
 
     /**
      * @inheritDoc
+     *
+     * TODO Adaptor for type of probe.
+     * TODO Entry value and unit verification.
      */
     public function store(Request $request): Response
     {

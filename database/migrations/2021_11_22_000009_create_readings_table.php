@@ -19,8 +19,8 @@ class CreateReadingsTable extends Migration
             $table->enum("type", ["temperature", "density", "ph", "ferm_pressure", "ambient_temp", "altitude"]);
             $table->timestamp("recorded_at")->useCurrent();
             $table->foreignId("probe_id")->nullable()->comment("Nullable to allow for manual records.")->constrained("probes");
-            $table->decimal("value", 8, 5, true);
-            $table->char("units", 8);
+            $table->decimal("value", 10, 5);
+            $table->char("units", 8)->nullable();
             $table->timestamps();
         });
     }
