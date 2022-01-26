@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -29,6 +28,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'remember_token',
     ];
 
     /**
@@ -37,6 +37,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'id',
         'password',
         'remember_token',
     ];
