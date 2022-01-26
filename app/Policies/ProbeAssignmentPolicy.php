@@ -2,12 +2,13 @@
 
 namespace App\Policies;
 
+use App\Models\ProbeAssignment;
 use App\Models\User;
 use App\Policies\Filters\AdminFilter;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
-class UserPolicy extends AdminFilter
+class ProbeAssignmentPolicy extends AdminFilter
 {
     use HandlesAuthorization;
 
@@ -17,90 +18,85 @@ class UserPolicy extends AdminFilter
      * @param User $user
      * @return Response
      */
-    public function viewAny(User $user): Response
+    public function viewAny(User $user)
     {
-        return Response::deny("Action denied.");
+        return Response::allow();
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param User $user
-     * @param User $model
+     * @param ProbeAssignment $probeAssignment
      * @return Response
      */
-    public function view(User $user, User $model): Response
+    public function view(User $user, ProbeAssignment $probeAssignment)
     {
-        return $user->id === $model->id
+        return $user->id === $probeAssignment->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You cannot view this user's details.");
+            : Response::deny("You do not own this probe.");
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @param User|null $user
+     * @param User $user
      * @return Response
      */
-    public function create(?User $user): Response
+    public function create(User $user)
     {
-        return is_null($user)
-            ? Response::allow()
-            : Response::deny("You already have an account.");
+        return Response::allow();
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param User $user
-     * @param User $model
+     * @param ProbeAssignment $probeAssignment
      * @return Response
      */
-    public function update(User $user, User $model): Response
+    public function update(User $user, ProbeAssignment $probeAssignment)
     {
-        return $user->id === $model->id
-            ? Response::allow()
-            : Response::deny("You cannot update this user.");
+        return Response::deny("Action denied.");
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param User $user
-     * @param User $model
+     * @param ProbeAssignment $probeAssignment
      * @return Response
      */
-    public function delete(User $user, User $model): Response
+    public function delete(User $user, ProbeAssignment $probeAssignment)
     {
-        return $user->id === $model->id
+        return $user->id === $probeAssignment->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You cannot delete this user.");
+            : Response::deny("You do not own this probe.");
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param User $user
-     * @param User $model
+     * @param ProbeAssignment $probeAssignment
      * @return Response
      */
-    public function restore(User $user, User $model): Response
+    public function restore(User $user, ProbeAssignment $probeAssignment)
     {
         return Response::deny("Action denied.");
     }
 
     /**
      * Determine whether the user can permanently delete the model.
-     * I'd like to make this return false, but it goes against GDPR.
      *
      * @param User $user
-     * @param User $model
+     * @param ProbeAssignment $probeAssignment
      * @return Response
      */
-    public function forceDelete(User $user, User $model): Response
+    public function forceDelete(User $user, ProbeAssignment $probeAssignment)
     {
-        return $user->id === $model->id
+        return $user->id === $probeAssignment->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You cannot delete this user.");
+            : Response::deny("You do not own this probe.");
     }
 }

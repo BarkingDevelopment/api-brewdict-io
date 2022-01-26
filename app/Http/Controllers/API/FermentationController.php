@@ -13,6 +13,16 @@ use Illuminate\Http\Response;
 class FermentationController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Fermentation::class);
+    }
+
+    /**
      * @inheritDoc
      */
     public function index(): Response

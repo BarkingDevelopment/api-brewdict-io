@@ -11,6 +11,16 @@ use Illuminate\Http\Response;
 class StyleCategoryController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(StyleCategory::class);
+    }
+
+    /**
      * @inheritDoc
      */
     public function index(): Response

@@ -11,6 +11,16 @@ use Illuminate\Http\Response;
 class StyleController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Style::class);
+    }
+
+    /**
      * @inheritDoc
      *
      * TODO Add include style category.

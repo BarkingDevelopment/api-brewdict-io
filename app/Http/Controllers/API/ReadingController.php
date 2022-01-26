@@ -15,6 +15,16 @@ use Illuminate\Http\Response;
 class ReadingController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Reading::class);
+    }
+
+    /**
      * @inheritDoc
      */
     public function index(): Response

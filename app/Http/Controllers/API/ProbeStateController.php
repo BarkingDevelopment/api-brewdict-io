@@ -14,6 +14,16 @@ use Illuminate\Http\Response;
 class ProbeStateController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(ProbeState::class);
+    }
+
+    /**
      * @inheritDoc
      */
     public function index(): Response

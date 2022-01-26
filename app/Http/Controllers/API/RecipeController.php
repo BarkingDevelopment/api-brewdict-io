@@ -11,6 +11,16 @@ use Illuminate\Http\Response;
 class RecipeController extends Controller
 {
     /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Recipe::class);
+    }
+
+    /**
      * @inheritDoc
      *
      * TODO Hide private recipes unless owner wants them.
