@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\RecipeState;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RecipeFactory extends Factory
@@ -16,6 +17,7 @@ class RecipeFactory extends Factory
         return [
             "name" => $this->faker->text(16),
             "description" => $this->faker->text(),
+            "state" => RecipeState::Published(),
         ];
     }
 }

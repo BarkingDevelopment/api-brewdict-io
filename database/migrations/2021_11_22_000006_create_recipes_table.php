@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RecipeState;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,6 +21,7 @@ class CreateRecipesTable extends Migration
             $table->foreignId("inspiration_id")->nullable()->constrained("recipes");
             $table->foreignId("style_id")->constrained("styles");
             $table->foreignId("owner_id")->nullable()->constrained("users");
+            $table->enum('state', RecipeState::getValues());
             $table->timestamps();
         });
     }
