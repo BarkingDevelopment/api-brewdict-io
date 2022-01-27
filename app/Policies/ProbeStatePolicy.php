@@ -35,7 +35,7 @@ class ProbeStatePolicy extends AdminFilter
     {
         return $user->id === $probeState->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -46,7 +46,7 @@ class ProbeStatePolicy extends AdminFilter
      */
     public function create(User $user): Response
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -58,7 +58,7 @@ class ProbeStatePolicy extends AdminFilter
      */
     public function update(User $user, ProbeState $probeState): Response
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -70,7 +70,7 @@ class ProbeStatePolicy extends AdminFilter
      */
     public function delete(User $user, ProbeState $probeState): Response
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -82,7 +82,7 @@ class ProbeStatePolicy extends AdminFilter
      */
     public function restore(User $user, ProbeState $probeState): Response
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -94,6 +94,6 @@ class ProbeStatePolicy extends AdminFilter
      */
     public function forceDelete(User $user, ProbeState $probeState): Response
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 }

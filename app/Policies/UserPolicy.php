@@ -19,7 +19,7 @@ class UserPolicy extends AdminFilter
      */
     public function viewAny(User $user): Response
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -33,7 +33,7 @@ class UserPolicy extends AdminFilter
     {
         return $user->id === $model->id
             ? Response::allow()
-            : Response::deny("You cannot view this user's details.");
+            : Response::deny("You cannot view this user's details.", 403);
     }
 
     /**
@@ -46,7 +46,7 @@ class UserPolicy extends AdminFilter
     {
         return is_null($user)
             ? Response::allow()
-            : Response::deny("You already have an account.");
+            : Response::deny("You already have an account.", 403);
     }
 
     /**
@@ -60,7 +60,7 @@ class UserPolicy extends AdminFilter
     {
         return $user->id === $model->id
             ? Response::allow()
-            : Response::deny("You cannot update this user.");
+            : Response::deny("You cannot update this user's details.", 403);
     }
 
     /**
@@ -74,7 +74,7 @@ class UserPolicy extends AdminFilter
     {
         return $user->id === $model->id
             ? Response::allow()
-            : Response::deny("You cannot delete this user.");
+            : Response::deny("You cannot delete this user.", 403);
     }
 
     /**
@@ -86,13 +86,12 @@ class UserPolicy extends AdminFilter
      */
     public function restore(User $user, User $model): Response
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
      * Determine whether the user can permanently delete the model.
-     * I'd like to make this return false, but it goes against GDPR.
-     *
+     * Keeping this functionality available abides by GDPR.
      * @param User $user
      * @param User $model
      * @return Response
@@ -101,6 +100,6 @@ class UserPolicy extends AdminFilter
     {
         return $user->id === $model->id
             ? Response::allow()
-            : Response::deny("You cannot delete this user.");
+            : Response::deny("You cannot delete this user.", 403);
     }
 }

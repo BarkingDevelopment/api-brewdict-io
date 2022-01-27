@@ -34,7 +34,7 @@ class ProbeAssignmentPolicy extends AdminFilter
     {
         return $user->id === $probeAssignment->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this probe.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -57,7 +57,7 @@ class ProbeAssignmentPolicy extends AdminFilter
      */
     public function update(User $user, ProbeAssignment $probeAssignment)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -71,7 +71,7 @@ class ProbeAssignmentPolicy extends AdminFilter
     {
         return $user->id === $probeAssignment->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this probe.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -83,7 +83,7 @@ class ProbeAssignmentPolicy extends AdminFilter
      */
     public function restore(User $user, ProbeAssignment $probeAssignment)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -97,6 +97,6 @@ class ProbeAssignmentPolicy extends AdminFilter
     {
         return $user->id === $probeAssignment->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this probe.");
+            : Response::deny("You do not own this probe.", 403);
     }
 }

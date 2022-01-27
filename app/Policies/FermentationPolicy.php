@@ -34,7 +34,7 @@ class FermentationPolicy extends AdminFilter
     {
         return $user->id === $fermentation->brewer()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this post.", 403);
     }
 
     /**
@@ -59,7 +59,7 @@ class FermentationPolicy extends AdminFilter
     {
         return $user->id === $fermentation->brewer()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this post.", 403);
     }
 
     /**
@@ -73,7 +73,7 @@ class FermentationPolicy extends AdminFilter
     {
         return $user->id === $fermentation->brewer()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this post.", 403);
     }
 
     /**
@@ -87,7 +87,7 @@ class FermentationPolicy extends AdminFilter
     {
         return $user->id === $fermentation->brewer()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this post.", 403);
     }
 
     /**
@@ -101,6 +101,6 @@ class FermentationPolicy extends AdminFilter
     {
         return $user->id === $fermentation->brewer()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this post.", 403);
     }
 }

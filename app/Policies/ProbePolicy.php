@@ -34,7 +34,7 @@ class ProbePolicy extends AdminFilter
     {
         return $user->id === $probe->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -59,7 +59,7 @@ class ProbePolicy extends AdminFilter
     {
         return $user->id === $probe->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -73,7 +73,7 @@ class ProbePolicy extends AdminFilter
     {
         return $user->id === $probe->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this post.", 403);
     }
 
     /**
@@ -85,7 +85,7 @@ class ProbePolicy extends AdminFilter
      */
     public function restore(User $user, Probe $probe)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -99,6 +99,6 @@ class ProbePolicy extends AdminFilter
     {
         return $user->id === $probe->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this post.");
+            : Response::deny("You do not own this probe.", 403);
     }
 }

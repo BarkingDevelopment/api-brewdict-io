@@ -43,7 +43,7 @@ class StylePolicy extends AdminFilter
      */
     public function create(User $user)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -55,7 +55,7 @@ class StylePolicy extends AdminFilter
      */
     public function update(User $user, Style $style)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -67,7 +67,7 @@ class StylePolicy extends AdminFilter
      */
     public function delete(User $user, Style $style)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -79,7 +79,7 @@ class StylePolicy extends AdminFilter
      */
     public function restore(User $user, Style $style)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -91,6 +91,6 @@ class StylePolicy extends AdminFilter
      */
     public function forceDelete(User $user, Style $style)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 }

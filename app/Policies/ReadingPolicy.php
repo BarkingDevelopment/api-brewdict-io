@@ -34,7 +34,7 @@ class ReadingPolicy extends AdminFilter
     {
         return $user->id === $reading->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this reading.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -57,7 +57,7 @@ class ReadingPolicy extends AdminFilter
      */
     public function update(User $user, Reading $reading)
     {
-        return Response::deny("Action denied.");
+        return Response::deny("Method not allowed.", 405);
     }
 
     /**
@@ -71,7 +71,7 @@ class ReadingPolicy extends AdminFilter
     {
         return $user->id === $reading->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this reading.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -85,7 +85,7 @@ class ReadingPolicy extends AdminFilter
     {
         return $user->id === $reading->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this reading.");
+            : Response::deny("You do not own this probe.", 403);
     }
 
     /**
@@ -99,6 +99,6 @@ class ReadingPolicy extends AdminFilter
     {
         return $user->id === $reading->probe()->owner()->id
             ? Response::allow()
-            : Response::deny("You do not own this reading.");
+            : Response::deny("You do not own this probe.", 403);
     }
 }
