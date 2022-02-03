@@ -69,7 +69,7 @@ class ReadingPolicy extends AdminFilter
      */
     public function delete(User $user, Reading $reading)
     {
-        return $user->id === $reading->probe()->owner()->id
+        return $user->id === $reading->fermentation()->brewer()->id && is_null($reading->probe())
             ? Response::allow()
             : Response::deny("You do not own this probe.", 403);
     }

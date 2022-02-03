@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FermentationCollection;
 use App\Http\Resources\FermentationResource;
+use App\Http\Resources\Objects\FermentationResourceObject;
+use App\Http\Resources\Objects\ProbeResourceObject;
 use App\Models\Fermentation;
 use App\Models\ProbeAssignment;
 use App\Models\Probe;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -22,68 +27,49 @@ class FermentationController extends Controller
         $this->authorizeResource(Fermentation::class);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function index(): Response
     {
         $ferments = Fermentation::all();
-        return response([ "ferments" => FermentationResource::collection($ferments), "message" => "Retrieved successfully."], 200);
+        return response(new FermentationCollection($ferments), 200);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function store(Request $request): Response
     {
         //TODO Variable validation.
         $ferment = Fermentation::create($request->all());
-        $name = $ferment->recipe()->name;
 
-        return response(["ferment" => new FermentationResource($ferment), "message" => "$name ferment created successfully"], 201);
+        return response( new FermentationResourceObject($ferment), 201);
     }
 
     /**
-     * @inheritDoc
-     *
      * TODO Add include recipe.
      */
     public function show(Fermentation $ferment): Response
     {
-        $name = $ferment->recipe()->name;
-
-        return response(["ferment" => new FermentationResource($ferment), "message" => "$name ferment retrieved successfully"], 200);
+        return response(new FermentationResource($ferment), 200);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function update(Request $request, Fermentation $ferment): Response
     {
         $ferment->update($request->all());
-        $name = $ferment->recipe()->name;
 
-        return response(["ferment" => new FermentationResource($ferment), "message" => "$name ferment updated successfully."], 200);
+        return response(new FermentationResourceObject($ferment), 200);
 
     }
 
-    /**
-     * @inheritDoc
-     */
     public function destroy(Fermentation $ferment): Response
     {
-        $name = $ferment->recipe()->name;
         $ferment->delete();
 
-        return response(["message" => "$name ferment deleted"], 200);
+        return response([], 200);
     }
-
 
     /**
      * Adds a probe to a ferment.
      *
      * @param Request $request
      * @param Fermentation $ferment
+     * @return Application|ResponseFactory|Response
      */
     public function add(Request $request, Fermentation $ferment)
     {
@@ -95,10 +81,10 @@ class FermentationController extends Controller
             $probe_assign->probe_id = $probe->id;
             $probe_assign->save();
 
-            return response(["message" => "$probe->name assigned to $ferment->id successfully."], 201);
+            return response(new ProbeResourceObject($probe), 201);
         }
         else{
-            return response(["message" => "$probe->name is already assigned to a fermentation."], 409);
+            return response(new ProbeResourceObject($probe), 409);
         }
     }
 
@@ -107,6 +93,7 @@ class FermentationController extends Controller
      *
      * @param Request $request
      * @param Fermentation $ferment
+     * @return Application|ResponseFactory|Response
      */
     public function remove(Request $request, Fermentation $ferment)
     {
@@ -116,9 +103,15 @@ class FermentationController extends Controller
                         ->where("probe_id", $probe->id)
                         ->delete();
 
-        return response(["message" => "$probe->name successfully deleted from $ferment->id."], 200);
+        return response(new ProbeResourceObject($probe), 200);
     }
 
+    /**
+     * Get the probe object from a request.
+     *
+     * @param Request $request
+     * @return mixed
+     */
     private function getProbe(Request $request)
     {
         $probe_id = $request->input("id");

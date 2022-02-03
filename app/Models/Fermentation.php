@@ -44,6 +44,16 @@ class Fermentation extends Model
     }
 
     /**
+     * Gets the recipe of the fermentation.
+     *
+     * @return BelongsTo
+     */
+    public function equipment()
+    {
+        return $this->belongsTo(Equipment::class);
+    }
+
+    /**
      * Gets the probes involved in recording data for the fermentation.
      *
      * @return HasManyThrough

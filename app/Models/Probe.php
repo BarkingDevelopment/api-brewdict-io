@@ -34,7 +34,7 @@ class Probe extends Model
         return $this->belongsTo(User::class, "owner_id");
     }
 
-    /**
+    /**own
      * Gets all the readings of the probe.
      *
      * @return HasMany

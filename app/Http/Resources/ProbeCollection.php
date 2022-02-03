@@ -3,32 +3,36 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\Objects\ProbeResourceObject;
-use App\Http\Resources\Objects\ProbeStateResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use JsonSerializable;
 
-class ProbeStateResource extends JsonResource
+class ProbeCollection extends ResourceCollection
 {
     /**
-     * Transform the resource into an array.
+     * Transform the resource collection into an array.
      *
      * @param  Request  $request
      * @return array|Arrayable|JsonSerializable
      */
     public function toArray($request)
     {
-        return new ProbeStateResourceObject($this);
+        return ProbeResourceObject::collection($this->collection);
     }
 
     /**
      * @inheritDoc
+     *
+     *  TODO Need to add link urls.
      */
     public function with($request)
     {
-        return array_merge(
-            new ProbeResourceObject($this->probe()),
-        );
+        return [
+            "links" => [
+                "self" => "",
+                "related" => "",
+            ],
+        ];
     }
 }

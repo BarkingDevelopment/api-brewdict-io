@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Objects\UserResourceObject;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,7 +28,7 @@ class UserController extends Controller
     public function index(): Response
     {
         $users = User::all();
-        return response([ "users" => UserResource::collection($users), "message" => "Retrieved successfully."], 200);
+        return response(new UserCollection($users), 200);
     }
 
     /**
@@ -36,7 +38,7 @@ class UserController extends Controller
     {
         $user = User::create($request->all());
 
-        return response(["user" => new UserResource($user), "message" => "$user->email created successfully"], 201);
+        return response(new UserResourceObject($user), 201);
     }
 
     /**
@@ -44,7 +46,7 @@ class UserController extends Controller
      */
     public function show(User $user): Response
     {
-        return response(["user" => new UserResource($user), "message" => "$user->email retrieved successfully"], 200);
+        return response(new UserResource($user), 200);
     }
 
     /**
@@ -54,7 +56,7 @@ class UserController extends Controller
     {
         $user->update($request->all());
 
-        return response(["user" => new UserResource($user), "message" => "$user->email updated successfully."], 200);
+        return response(new UserResourceObject($user), 200);
 
     }
 
@@ -65,6 +67,6 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return response(["message" => "$user->email deleted"], 200);
+        return response([], 200);
     }
 }
