@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\ApiAuthController;
 use App\Models\Equipment;
 use App\Models\Fermentation;
 use App\Models\Probe;
@@ -12,7 +13,6 @@ use App\Models\Style;
 use App\Models\StyleCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
         $users = User::factory()
             ->count(5)
             ->create();
+
+        $users[] = User::factory()->admin()->create();
 
         $categories = StyleCategory::factory()
             ->count(30)
