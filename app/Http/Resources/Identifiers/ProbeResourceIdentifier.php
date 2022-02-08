@@ -2,7 +2,11 @@
 
 namespace App\Http\Resources\Identifiers;
 
-class ProbeResourceIdentifier extends ResourceIdentifier
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ProbeResourceIdentifier extends JsonResource
 {
-    const TYPE = "probe";
+    use ResourceIdentifier;
+
+    static string $TYPE = "probe";
 }

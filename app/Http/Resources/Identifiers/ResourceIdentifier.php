@@ -3,12 +3,9 @@
 namespace App\Http\Resources\Identifiers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
-abstract class ResourceIdentifier extends JsonResource
+trait ResourceIdentifier
 {
-    const TYPE = "null";
-
     /**
      * Transform the resource into an array.
      *
@@ -18,7 +15,7 @@ abstract class ResourceIdentifier extends JsonResource
     public function toArray($request)
     {
         return [
-            "type" => self::TYPE,
+            "type" => self::$TYPE,
             "id" => $this->id,
         ];
     }

@@ -2,7 +2,11 @@
 
 namespace App\Http\Resources\Identifiers;
 
-class StyleCategoryResourceIdentifier extends ResourceIdentifier
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class StyleCategoryResourceIdentifier extends JsonResource
 {
-    const TYPE = "style_category";
+    use ResourceIdentifier;
+
+    static string $TYPE = "style_category";
 }

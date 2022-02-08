@@ -2,7 +2,11 @@
 
 namespace App\Http\Resources\Identifiers;
 
-class RecipeResourceIdentifier extends ResourceIdentifier
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class RecipeResourceIdentifier extends JsonResource
 {
-    const TYPE = "recipe";
+    use ResourceIdentifier;
+
+    static string $TYPE = "recipe";
 }

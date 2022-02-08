@@ -2,7 +2,11 @@
 
 namespace App\Http\Resources\Identifiers;
 
-class ReadingResourceIdentifier extends ResourceIdentifier
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ReadingResourceIdentifier extends JsonResource
 {
-    const TYPE = "reading";
+    use ResourceIdentifier;
+
+    static string $TYPE = "reading";
 }

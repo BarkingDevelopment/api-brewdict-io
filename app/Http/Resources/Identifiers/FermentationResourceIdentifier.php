@@ -2,7 +2,11 @@
 
 namespace App\Http\Resources\Identifiers;
 
-class FermentationResourceIdentifier extends ResourceIdentifier
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class FermentationResourceIdentifier extends JsonResource
 {
-    const TYPE = "fermentation";
+    use ResourceIdentifier;
+
+    static string $TYPE = "fermentation";
 }
