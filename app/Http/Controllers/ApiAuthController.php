@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Objects\UserResourceObject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -10,12 +11,12 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 /***
- * Implements OAuth PAssword Grant. While this goes against OAuth2 guidelines, this is the simplest version of token
+ * Implements OAuth Password Grant. While this goes against OAuth2 guidelines, this is the simplest version of token
  * authentication I can implement and still provides a level of security.
  */
 class ApiAuthController extends Controller
 {
-    const TOKEN_NAME = "Laravel Password Grant Client";
+    const TOKEN_NAME = "Brewdict.io Password Grant Client";
 
     public function register(Request $request)
     {
@@ -27,7 +28,7 @@ class ApiAuthController extends Controller
 
         if ($validator->fails())
         {
-            return response(["message" => "Registration failed.", "errors" => $validator->errors()->all()], 422);
+            return response(["errors" => $validator->errors()->all()], 422);
         }
 
         $request["password"] = Hash::make($request->password);
@@ -35,9 +36,10 @@ class ApiAuthController extends Controller
 
         $user = User::create($request->toArray());
 
-        $accessToken = $user->createToken(self::TOKEN_NAME)->accessToken;
+        $token = $user->createToken(self::TOKEN_NAME)->accessToken;
 
-        return response(["message" => "Registration successful.", "user" => $user, "access_token" => $accessToken], 201);
+        // TODO Enforce email verification.
+        return response(["data" => new UserResourceObject($user), "related" => ["access_token" => $token]], 201);
     }
 
     public function login(Request $request)
@@ -50,16 +52,18 @@ class ApiAuthController extends Controller
 
         if ($validator->safe()->all()) {
             $user = User::where("username", $request->username)->orWhere("email", $request->email)->first();
+
             if ($user) {
+                // TODO: Identified sending plain text password over the internet. Why did I think this was a good idea? Compare the password sent with the hashed password stored in the db. Get the client to hash the password before sending.
                 if (Hash::check($request->password, $user->password)) {
-                    $accessToken = $user->createToken(self::TOKEN_NAME)->accessToken;
-                    return response(["message" => "Login successful.", "access_token" => $accessToken], 200);
+                    $token = $user->createToken(self::TOKEN_NAME)->accessToken;
+                    return response(["data" => new UserResourceObject($user), "related" => ["access_token" => $token]], 200);
 
-                } else { $errorResponse = ["message" => "Login failed, please check your details."]; }
+                } else { $errorResponse = ["errors" => "Login failed, please check your details."]; }
 
-            } else { $errorResponse = ["message" => "Login failed, please check your details."]; }
+            } else { $errorResponse = ["errors" => "Login failed, please check your details."]; }
 
-        } else { $errorResponse = ["message" => "Login failed.", "errors" => $validator->errors()->all()]; }
+        } else { $errorResponse = ["errors" => $validator->errors()->all()]; }
 
         return response($errorResponse, 422);
     }
@@ -68,6 +72,6 @@ class ApiAuthController extends Controller
         $token = $request->user()->token();
         $token->revoke();
 
-        return response(["message" => "Successfully logged out."], 200);
+        return response([], 204);
     }
 }
