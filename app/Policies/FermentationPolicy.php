@@ -8,9 +8,9 @@ use App\Policies\Filters\AdminFilter;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
-class FermentationPolicy extends AdminFilter
+class FermentationPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminFilter;
 
     /**
      * Determine whether the user can view any models.

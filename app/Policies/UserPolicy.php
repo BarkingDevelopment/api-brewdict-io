@@ -7,9 +7,9 @@ use App\Policies\Filters\AdminFilter;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
-class UserPolicy extends AdminFilter
+class UserPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminFilter;
 
     /**
      * Determine whether the user can view any models.

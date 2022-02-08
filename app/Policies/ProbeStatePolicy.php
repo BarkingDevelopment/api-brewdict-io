@@ -9,9 +9,9 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 //TODO Include ProbeStatePolicy for Probes and Admins; allowing them to create probe states and delete and restore readings respectively.
-class ProbeStatePolicy extends AdminFilter
+class ProbeStatePolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminFilter;
 
     /**
      * Determine whether the user can view any models.

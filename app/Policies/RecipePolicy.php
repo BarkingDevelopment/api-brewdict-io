@@ -8,9 +8,9 @@ use App\Policies\Filters\AdminFilter;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
-class RecipePolicy extends AdminFilter
+class RecipePolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, AdminFilter;
 
     /**
      * Determine whether the user can view any models.
@@ -32,7 +32,7 @@ class RecipePolicy extends AdminFilter
      */
     public function view(?User $user, Recipe $recipe)
     {
-        return optional($user)->id === $recipe->owner()->id || !$recipe->isPrivate()
+        return optional($user)->id === $recipe->owner->id || !$recipe->isPrivate()
             ? Response::allow()
             : Response::deny("You cannot view this recipe.", 403);
     }
@@ -57,7 +57,7 @@ class RecipePolicy extends AdminFilter
      */
     public function update(User $user, Recipe $recipe)
     {
-        return $user->id === $recipe->owner()->id
+        return $user->id === $recipe->owner->id
             ? Response::allow()
             : Response::deny("You do not own this recipe.", 403);
     }
@@ -71,7 +71,7 @@ class RecipePolicy extends AdminFilter
      */
     public function delete(User $user, Recipe $recipe)
     {
-        return $user->id === $recipe->owner()->id
+        return $user->id === $recipe->owner->id
             ? Response::allow()
             : Response::deny("You do not own this recipe.", 403);
     }
@@ -85,7 +85,7 @@ class RecipePolicy extends AdminFilter
      */
     public function restore(User $user, Recipe $recipe)
     {
-        return $user->id === $recipe->owner()->id
+        return $user->id === $recipe->owner->id
             ? Response::allow()
             : Response::deny("You do not own this recipe.", 403);
     }
@@ -99,7 +99,7 @@ class RecipePolicy extends AdminFilter
      */
     public function forceDelete(User $user, Recipe $recipe)
     {
-        return $user->id === $recipe->owner()->id
+        return $user->id === $recipe->owner->id
             ? Response::allow()
             : Response::deny("You do not own this recipe.", 403);
     }

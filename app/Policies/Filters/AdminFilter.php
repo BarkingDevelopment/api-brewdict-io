@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
-abstract class AdminFilter
+trait AdminFilter
 {
     use HandlesAuthorization;
 
