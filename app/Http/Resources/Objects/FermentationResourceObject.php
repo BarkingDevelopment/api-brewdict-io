@@ -3,8 +3,8 @@
 namespace App\Http\Resources\Objects;
 
 use App\Http\Resources\Identifiers\EquipmentResourceIdentifier;
-use App\Http\Resources\Identifiers\ProbeResourceIdentifierCollection;
-use App\Http\Resources\Identifiers\ReadingResourceIdentifierCollection;
+use App\Http\Resources\Identifiers\ProbeResourceIdentifier;
+use App\Http\Resources\Identifiers\ReadingResourceIdentifier;
 use App\Http\Resources\Identifiers\RecipeResourceIdentifier;
 use App\Http\Resources\Identifiers\UserResourceIdentifier;
 use Illuminate\Http\Request;
@@ -22,6 +22,8 @@ class FermentationResourceObject extends JsonResource
      */
     public function toArray($request)
     {
+        $SELF_LINK = $_ENV["APP_URL"] . "/api/" . self::TYPE . "/" . $this->id;
+
         return [
             "type" => self::TYPE,
             "id" => $this->id,
@@ -31,18 +33,40 @@ class FermentationResourceObject extends JsonResource
                 "updated_at" => $this->updated_at
             ],
             "relationships" => [
-                "recipe" => [
-                    "data" => new RecipeResourceIdentifier($this->recipe())
+                RecipeResourceObject::TYPE => [
+                    "data" => new RecipeResourceIdentifier($this->recipe),
+                    "links" => [
+                        "self" => $_ENV["APP_URL"] . "/api/" . ProbeResourceObject::TYPE. "/" . $this->recipe->id,
+                    ],
                 ],
                 "brewer" => [
-                    "data" => new UserResourceIdentifier($this->brewer())
+                    "data" => new UserResourceIdentifier($this->brewer),
+                    "links" => [
+                        "self" => $_ENV["APP_URL"] . "/api/" . ProbeResourceObject::TYPE . "/" . $this->brewer->id,
+                    ],
                 ],
-                "equipment" => [
-                    "data" => new EquipmentResourceIdentifier($this->equipment())
+                EquipmentResourceObject::TYPE => [
+                    "data" => new EquipmentResourceIdentifier($this->equipment),
+                    "links" => [
+                        "self" => $_ENV["APP_URL"] . "/api/" . EquipmentResourceObject::TYPE . "/" . $this->equipment->id,
+                    ],
                 ],
-                new ProbeResourceIdentifierCollection($this->probes()),
-                new ReadingResourceIdentifierCollection($this->readings()),
-            ]
+                ProbeResourceObject::TYPE => [
+                    "data" => ProbeResourceIdentifier::collection($this->probes),
+                    "links" => [
+                        "related" => $SELF_LINK . "/" . ProbeResourceObject::TYPE,
+                    ],
+                ],
+                ReadingResourceObject::TYPE => [
+                    "data" => ReadingResourceIdentifier::collection($this->readings),
+                    "links" => [
+                        "related" => $SELF_LINK . "/" . ReadingResourceObject::TYPE,
+                    ],
+                ],
+            ],
+            "links" => [
+                "self" => $SELF_LINK,
+            ],
         ];
     }
 }

@@ -87,4 +87,14 @@ class Probe extends Model
     {
         return $this->hasOne(ProbeState::class)->latestOfMany("recorded_at", "max");
     }
+
+    /**
+     * Gets the current status reading of the probe.
+     *
+     * @return HasOne
+     */
+    public function latestReading()
+    {
+        return $this->hasOne(Reading::class)->latestOfMany("recorded_at", "max");
+    }
 }

@@ -2,14 +2,15 @@
 
 namespace App\Http\Resources\Objects;
 
-use App\Http\Resources\Identifiers\FermentationResourceIdentifierCollection;
-use App\Http\Resources\Identifiers\ProbeResourceIdentifierCollection;
-use App\Http\Resources\Identifiers\RecipeResourceIdentifierCollection;
+use App\Http\Resources\Identifiers\FermentationResourceIdentifier;
+use App\Http\Resources\Identifiers\ProbeResourceIdentifier;
+use App\Http\Resources\Identifiers\RecipeResourceIdentifier;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResourceObject extends ResourceObject
+class UserResourceObject extends JsonResource
 {
-    const TYPE = "user";
+    const TYPE = "users";
 
     /**
      * Transform the resource into an array.
@@ -19,6 +20,8 @@ class UserResourceObject extends ResourceObject
      */
     public function toArray($request)
     {
+        $SELF_LINK = $_ENV["APP_URL"] . "/api/" . self::TYPE . "/" . $this->id;
+
         return [
             "type" => self::TYPE,
             "id" => $this->id,
@@ -29,9 +32,27 @@ class UserResourceObject extends ResourceObject
                 "updated_at" => $this->updated_at,
             ],
             "relationship" => [
-                new RecipeResourceIdentifierCollection($this->recipes()),
-                new FermentationResourceIdentifierCollection($this->fermentations()),
-                new ProbeResourceIdentifierCollection($this->probes()),
+                RecipeResourceObject::TYPE => [
+                    "data" => RecipeResourceIdentifier::collection($this->recipes),
+                    "links" => [
+                        "related" => $SELF_LINK . "/" . RecipeResourceObject::TYPE,
+                    ],
+                ],
+                FermentationResourceObject::TYPE => [
+                    "data" => FermentationResourceIdentifier::collection($this->fermentations),
+                    "links" => [
+                        "related" => $SELF_LINK . "/" . FermentationResourceObject::TYPE,
+                    ],
+                ],
+                ProbeResourceObject::TYPE => [
+                    "data" => ProbeResourceIdentifier::collection($this->probes),
+                    "links" => [
+                        "related" => $SELF_LINK . "/" . ProbeResourceObject::TYPE,
+                    ],
+                ],
+            ],
+            "links" => [
+                "self" => $SELF_LINK,
             ],
         ];
     }

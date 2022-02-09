@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class EquipmentResourceObject extends JsonResource
 {
-    const TYPE = "equipment";
+    const TYPE = "equipments";
 
     /**
      * Transform the resource into an array.
@@ -17,6 +17,8 @@ class EquipmentResourceObject extends JsonResource
      */
     public function toArray($request)
     {
+        $SELF_LINK = $_ENV["APP_URL"] . "/api/" . self::TYPE . "/" . $this->id;
+
         return [
             "type" => self::TYPE,
             "id" => $this->id,
@@ -24,7 +26,10 @@ class EquipmentResourceObject extends JsonResource
                 "created_at" => $this->created_at,
                 "updated_at" => $this->updated_at
             ],
-            "relationship" => []
+            "relationship" => [],
+            "links" => [
+                "self" => $SELF_LINK,
+            ],
         ];
     }
 }

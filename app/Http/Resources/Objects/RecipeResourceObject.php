@@ -6,10 +6,11 @@ use App\Http\Resources\Identifiers\RecipeResourceIdentifier;
 use App\Http\Resources\Identifiers\StyleResourceIdentifier;
 use App\Http\Resources\Identifiers\UserResourceIdentifier;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class RecipeResourceObject extends ResourceObject
+class RecipeResourceObject extends JsonResource
 {
-    const TYPE = "recipe";
+    const TYPE = "recipes";
 
     /**
      * Transform the resource into an array.
@@ -19,6 +20,8 @@ class RecipeResourceObject extends ResourceObject
      */
     public function toArray($request)
     {
+        $SELF_LINK = $_ENV["APP_URL"] . "/api/" . self::TYPE . "/" . $this->id;
+
         return [
             "type" => self::TYPE,
             "id" => $this->id,
@@ -30,14 +33,26 @@ class RecipeResourceObject extends ResourceObject
             ],
             "relationship" => [
                 "owner" => [
-                    "data" => new UserResourceIdentifier($this->owner()),
+                    "data" => new UserResourceIdentifier($this->owner),
+                    "links" => [
+                        "self" => $_ENV["APP_URL"] . "/api/" . UserResourceObject::TYPE . "/" . $this->owner->id,
+                    ],
                 ],
                 "inspiration" => [
-                    "data" => !is_null($this->parent()) ? new RecipeResourceIdentifier($this->parent()) : "null",
+                    "data" => !is_null($this->parent) ? new RecipeResourceIdentifier($this->parent) : "null",
+                    "links" => !is_null($this->parent) ? [
+                        "self" => $_ENV["APP_URL"] . "/api/" . RecipeResourceObject::TYPE . "/" . $this->parent->id,
+                    ] : [],
                 ],
-                "style" => [
-                    "data" => new StyleResourceIdentifier($this->style()),
+                StyleResourceObject::TYPE => [
+                    "data" => new StyleResourceIdentifier($this->style),
+                    "links" => [
+                        "self" => $_ENV["APP_URL"] . "/api/" . StyleResourceObject::TYPE . "/" . $this->style->id,
+                    ],
                 ],
+            ],
+            "links" => [
+                "self" => $SELF_LINK,
             ],
         ];
     }

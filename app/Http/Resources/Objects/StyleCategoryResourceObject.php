@@ -2,12 +2,13 @@
 
 namespace App\Http\Resources\Objects;
 
-use App\Http\Resources\Identifiers\StyleResourceIdentifierCollection;
+use App\Http\Resources\Identifiers\StyleResourceIdentifier;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class StyleCategoryResourceObject extends ResourceObject
+class StyleCategoryResourceObject extends JsonResource
 {
-    const TYPE = "style_category";
+    const TYPE = "style_categories";
 
     /**
      * Transform the resource into an array.
@@ -17,6 +18,8 @@ class StyleCategoryResourceObject extends ResourceObject
      */
     public function toArray($request)
     {
+        $SELF_LINK = $_ENV["APP_URL"] . "/api/" . self::TYPE . "/" . $this->id;
+
         return [
             "type" => self::TYPE,
             "id" => $this->id,
@@ -29,7 +32,15 @@ class StyleCategoryResourceObject extends ResourceObject
                 "updated_at" => $this->updated_at,
             ],
             "relationship" => [
-                new StyleResourceIdentifierCollection($this->styles()),
+                StyleResourceObject::TYPE => [
+                    "data" => StyleResourceIdentifier::collection($this->styles),
+                    "links" => [
+                        "related" => $SELF_LINK . "/" . StyleResourceObject::TYPE,
+                    ],
+                ],
+            ],
+            "links" => [
+                "self" => $SELF_LINK,
             ],
         ];
     }
