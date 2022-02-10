@@ -21,18 +21,16 @@ class RecipeResource extends JsonResource
      */
     public function toArray($request)
     {
-        return new RecipeResourceObject($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function with($request)
-    {
-           return array_merge(
-                new UserResourceObject($this->fermentation()),
-                !is_null($this->parent()) ? new RecipeResourceIdentifier($this->parent()) : [],
-                new StyleResourceObject($this->style()),
-           );
+        return [
+            "data" => new RecipeResourceObject($this),
+            "links" => [
+                "self" => $_ENV["APP_URL"] . "/api/" . RecipeResourceObject::TYPE,
+            ],
+            "included" => [
+                new UserResourceObject($this->owner),
+                $this->when(!is_null($this->parent), new RecipeResourceObject($this->parent)),
+                new StyleResourceObject($this->style),
+            ]
+        ];
     }
 }

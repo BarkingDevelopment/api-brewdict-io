@@ -41,13 +41,15 @@ Route::group(["middleware" => ["cors", "json.response"]], function () {
         Route::post("fermentations/{ferment}/add", [FermentationController::class, "add"]);
         Route::delete("fermentations/{ferment}/remove", [FermentationController::class, "remove"]);
 
-        Route::apiResource("users.probes", ProbeController::class)->middleware("auth:api");
+        Route::apiResource("users.probes", ProbeController::class)->shallow();
+        Route::apiResource("users.recipes", RecipeController::class, ["except" => ["index", "show"]])->shallow();
         Route::apiResource("probes.states", ProbeStateController::class, ["except" => ["update", "destroy"]])->shallow();
         Route::apiResource("fermentations.probes", ProbeController::class, ["only" => ["index", "show"]]);
         Route::apiResource("probes.readings", ReadingController::class, ["except" => ["show", "update", "destroy"]])->shallow();
     });
 
-    Route::apiResource("users.recipes", RecipeController::class)->shallow();                                                                                    //TODO Policy to private recipes.
+    Route::get("recipes", [RecipeController::class, 'index']);
+    Route::apiResource("users.recipes", RecipeController::class, ["only" => ["index", "show"]])->shallow();
     Route::apiResource("style-category", StyleCategoryController::class);
     Route::apiResource("style-category.styles", StyleController::class)->shallow();
 });

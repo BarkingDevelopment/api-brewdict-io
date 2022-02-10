@@ -20,6 +20,19 @@ class Recipe extends Model
      */
     protected $table = 'recipes';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'owner_id',
+        'inspiration_id',
+        'style_id',
+    ];
+
     /*
      * Physical relationships.
      */

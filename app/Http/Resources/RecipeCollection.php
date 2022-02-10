@@ -18,20 +18,10 @@ class RecipeCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return RecipeResourceObject::collection($this->collection);
-    }
-
-    /**
-     * @inheritDoc
-     *
-     *  TODO Need to add link urls.
-     */
-    public function with($request)
-    {
         return [
+            "data" => RecipeResourceObject::collection($this->collection),
             "links" => [
-                "self" => "",
-                "related" => "",
+                "self" => $_ENV["APP_URL"] . "/api/" . RecipeResourceObject::TYPE,
             ],
         ];
     }
