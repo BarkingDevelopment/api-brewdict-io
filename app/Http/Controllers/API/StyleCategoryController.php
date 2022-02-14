@@ -12,15 +12,13 @@ use Illuminate\Http\Response;
 
 class StyleCategoryController extends Controller
 {
-    /**
-     * Create the controller instance.
-     *
-     * @return void
-     */
+    /*
+     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
     public function __construct()
     {
         $this->authorizeResource(StyleCategory::class);
     }
+    */
 
     /**
      * @inheritDoc

@@ -14,15 +14,13 @@ use Illuminate\Support\Facades\Validator;
 
 class RecipeController extends Controller
 {
-    /**
-     * Create the controller instance.
-     *
-     * @return void
-     */
+    /*
+     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
     public function __construct()
     {
         $this->authorizeResource(Recipe::class);
     }
+    */
 
     public function index(): Response
     {
