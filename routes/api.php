@@ -35,16 +35,17 @@ Route::group(["middleware" => ["cors", "json.response"]], function () {
     Route::middleware("auth:api")->group(function() {
         Route::post("logout", [ApiAuthController::class, "logout"])->name("logout.api");
 
-        //TODO Add Policies;
         Route::apiResource("users", UserController::class, ["except" => ["index", "store"]]);
-        Route::apiResource("users.recipes.fermentations", FermentationController::class, ["except" => ["update", "destroy"]]);
-        Route::post("fermentations/{ferment}/add", [FermentationController::class, "add"]);
-        Route::delete("fermentations/{ferment}/remove", [FermentationController::class, "remove"]);
+        Route::apiResource("users.recipes", RecipeController::class, ["except" => ["index", "show"]])->shallow();
+
+        Route::apiResource("users.fermentations", FermentationController::class, ["except" => ["update"]])->shallow();
+        Route::apiResource("fermentations.probes", ProbeController::class, ["only" => ["index", "show"]]);
+        Route::put("fermentations/{fermentation}/start", [FermentationController::class, "start"]);
+        Route::post("fermentations/{fermentation}/probes/add", [FermentationController::class, "add"]);
+        Route::delete("fermentations/{fermentation}/probes/remove", [FermentationController::class, "remove"]);
 
         Route::apiResource("users.probes", ProbeController::class)->shallow();
-        Route::apiResource("users.recipes", RecipeController::class, ["except" => ["index", "show"]])->shallow();
         Route::apiResource("probes.states", ProbeStateController::class, ["except" => ["update", "destroy"]])->shallow();
-        Route::apiResource("fermentations.probes", ProbeController::class, ["only" => ["index", "show"]]);
         Route::apiResource("probes.readings", ReadingController::class, ["except" => ["show", "update", "destroy"]])->shallow();
     });
 

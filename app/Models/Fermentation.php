@@ -19,6 +19,18 @@ class Fermentation extends Model
      */
     protected $table = 'fermentations';
 
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'recipe_id',
+        'brewed_by',
+        'started_at',
+    ];
+
     /*
      * Physical relationships.
      */
@@ -60,7 +72,7 @@ class Fermentation extends Model
      */
     public function probes()
     {
-        return $this->hasManyThrough(Probe::class, ProbeAssignment::class);
+        return $this->hasManyThrough(Probe::class, ProbeAssignment::class, "probe_id", "id");
     }
 
     /**

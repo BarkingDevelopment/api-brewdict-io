@@ -18,21 +18,12 @@ class FermentationCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return FermentationResourceObject::collection($this->collection);
-    }
-
-    /**
-     * @inheritDoc
-     *
-     *  TODO Need to add link urls.
-     */
-    public function with($request)
-    {
         return [
+            "data" => FermentationResourceObject::collection($this->collection),
             "links" => [
-                "self" => "",
-                "related" => "",
+                "self" => $_ENV["APP_URL"] . "/api/" . FermentationResourceObject::TYPE,
             ],
         ];
     }
+
 }

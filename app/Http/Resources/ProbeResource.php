@@ -29,10 +29,12 @@ class ProbeResource extends JsonResource
      */
     public function with($request)
     {
-        return array_merge(
-            new UserResourceObject($this->owner()),
-            new ProbeStateResourceObject($this->status()),
-            new FermentationResourceObject($this->currentFermentation()),
-        );
+        return [
+            "included" => array_merge(
+                new UserResourceObject($this->owner()),
+                new ProbeStateResourceObject($this->status()),
+                new FermentationResourceObject($this->currentFermentation()),
+            )
+        ];
     }
 }

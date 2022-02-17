@@ -46,10 +46,10 @@ class FermentationResourceObject extends JsonResource
                     ],
                 ],
                 EquipmentResourceObject::TYPE => [
-                    "data" => new EquipmentResourceIdentifier($this->equipment),
-                    "links" => [
-                        "self" => $_ENV["APP_URL"] . "/api/" . EquipmentResourceObject::TYPE . "/" . $this->equipment->id,
-                    ],
+                    "data" => !is_null($this->equipment) ? new EquipmentResourceIdentifier($this->equipment) : "null",
+                    "links" => !is_null($this->equipment) ? [
+                        "self" => $_ENV["APP_URL"] . "/api/" . EquipmentResourceObject::TYPE . "/" . $this->parent->id,
+                    ] : [],
                 ],
                 ProbeResourceObject::TYPE => [
                     "data" => ProbeResourceIdentifier::collection($this->probes),

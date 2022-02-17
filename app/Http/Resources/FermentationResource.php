@@ -23,20 +23,18 @@ class FermentationResource extends JsonResource
      */
     public function toArray($request)
     {
-        return new FermentationResourceObject($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function with($request)
-    {
-        return array_merge(
-            new RecipeResourceObject($this->recipe()),
-            new UserResourceObject($this->brewer()),
-            new EquipmentResourceObject($this->equipment()),
-            ProbeResourceObject::collection($this->probes()),
-            ReadingResourceObject::collection($this->readings()),
-        );
+        return [
+            "data" => new FermentationResourceObject($this),
+            "links" => [
+                "self" => $_ENV["APP_URL"] . "/api/" . FermentationResourceObject::TYPE,
+            ],
+            "included" => [
+                new RecipeResourceObject($this->recipe),
+                new UserResourceObject($this->brewer),
+                new EquipmentResourceObject($this->equipment),
+                ProbeResourceObject::collection($this->probes),
+                ReadingResourceObject::collection($this->readings),
+            ]
+        ];
     }
 }

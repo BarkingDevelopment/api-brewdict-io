@@ -10,10 +10,12 @@ use App\Http\Resources\Objects\ProbeResourceObject;
 use App\Models\Fermentation;
 use App\Models\ProbeAssignment;
 use App\Models\Probe;
+use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class FermentationController extends Controller
 {
@@ -27,39 +29,82 @@ class FermentationController extends Controller
 
     public function index(): Response
     {
-        $ferments = Fermentation::all();
-        return response(new FermentationCollection($ferments), 200);
+        $fermentations = Fermentation::all();
+        return response(new FermentationCollection($fermentations), 200);
     }
 
-    public function store(Request $request): Response
+    public function store(Request $request, User $user): Response
     {
-        //TODO Variable validation.
-        $ferment = Fermentation::create($request->all());
+        $validator = Validator::make($request->all(), [
+            "recipe_id" => "required|exists:recipes,id",
+            "brewed_by" => "prohibited",
+            "equipment_id" => "prohibited",
+            "started_At" => "prohibited",
+        ]);
+
+        if ($validator->fails())
+        {
+            return response(["errors" => $validator->errors()->all()], 422);
+        }
+
+        $ferment = Fermentation::create([
+            "recipe_id" => $request->recipe_id,
+            "brewed_by" => $user->id,
+        ]);
 
         return response( new FermentationResourceObject($ferment), 201);
     }
 
+    public function show(Fermentation $fermentation): Response
+    {
+        return response(new FermentationResource($fermentation), 200);
+    }
+
+    public function update(Request $request, Fermentation $fermentation): Response
+    {
+        if (!$fermentation->exists()) return response(["errors" => ["The selected fermentation id is invalid."]], 404);
+
+        /**
+         * Update path currently disabled via routing.
+         * If the fermentation ever needs to be updated, the validator here can be changed.
+         */
+        $validator = Validator::make($request->all(), [
+            "recipe_id" => "prohibited",
+            "brewed_by" => "prohibited",
+            "equipment_id" => "prohibited",
+            "started_at" => "prohibited",
+        ]);
+
+        if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
+
+        $fermentation->update($request->all());
+
+        return response(new FermentationResourceObject($fermentation), 200);
+    }
+
+    public function destroy(Fermentation $fermentation): Response
+    {
+        $fermentation->delete();
+
+        return response([], 204);
+    }
+
     /**
-     * TODO Add include recipe.
+     * @param Fermentation $fermentation
      */
-    public function show(Fermentation $ferment): Response
+    public function start(Fermentation $fermentation)
     {
-        return response(new FermentationResource($ferment), 200);
-    }
+        if (is_null($fermentation->started_at))
+        {
+            $fermentation->update([
+                "started_at" => date('Y-m-d H:i:s')
+            ]);
 
-    public function update(Request $request, Fermentation $ferment): Response
-    {
-        $ferment->update($request->all());
-
-        return response(new FermentationResourceObject($ferment), 200);
-
-    }
-
-    public function destroy(Fermentation $ferment): Response
-    {
-        $ferment->delete();
-
-        return response([], 200);
+            return response(new FermentationResourceObject($fermentation), 200);
+        }
+        else {
+            return response(["errors" => ["Fermentation already started."]], 403);
+        }
     }
 
     /**
@@ -69,13 +114,13 @@ class FermentationController extends Controller
      * @param Fermentation $ferment
      * @return Application|ResponseFactory|Response
      */
-    public function add(Request $request, Fermentation $ferment)
+    public function add(Request $request, Fermentation $fermentation)
     {
         $probe = $this->getProbe($request);
 
         if(ProbeAssignment::where("probe_id", $probe->id)->count() === 0 ) {
             $probe_assign = new ProbeAssignment();
-            $probe_assign->fermentation_id = $ferment->id;
+            $probe_assign->fermentation_id = $fermentation->id;
             $probe_assign->probe_id = $probe->id;
             $probe_assign->save();
 
@@ -93,11 +138,11 @@ class FermentationController extends Controller
      * @param Fermentation $ferment
      * @return Application|ResponseFactory|Response
      */
-    public function remove(Request $request, Fermentation $ferment)
+    public function remove(Request $request, Fermentation $fermentation)
     {
         $probe = $this->getProbe($request);
 
-        ProbeAssignment::where("fermentation_id", $ferment->id)
+        ProbeAssignment::where("fermentation_id", $fermentation->id)
                         ->where("probe_id", $probe->id)
                         ->delete();
 

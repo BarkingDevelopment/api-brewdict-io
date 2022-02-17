@@ -28,9 +28,11 @@ class ReadingResource extends JsonResource
      */
     public function with($request)
     {
-        return array_merge(
-            new FermentationResourceObject($this->fermentation()),
-            new ProbeResourceObject($this->probe()),
-        );
+        return [
+            "included" => array_merge(
+                new FermentationResourceObject($this->fermentation()),
+                new ProbeResourceObject($this->probe()),
+            )
+        ];
     }
 }
