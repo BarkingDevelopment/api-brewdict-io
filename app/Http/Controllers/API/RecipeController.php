@@ -33,8 +33,8 @@ class RecipeController extends Controller
         $validator = Validator::make($request->all(), [
             "name" => "required|string|max:63",
             "description" => "required|string|max:255",
-            "inspiration_id" => "exists:recipes,id",
-            "style_id" => "exists:styles,id",
+            "inspiration_id" => "required_without:style_id|prohibits:style_id|exists:recipes,id",
+            "style_id" => "required_without:inspiration_id|prohibits:inspiration_id|exists:styles,id",
         ]);
 
         if ($validator->fails())
@@ -46,7 +46,7 @@ class RecipeController extends Controller
             "name" => $request->name,
             "description" => $request->description,
             "inspiration_id" => $request->inspiration_id,
-            "style_id" => $request->style_id,
+            "style_id" => $request->style_id ?? Recipe::where("id", $request->inspiration_id)->first()->style_id,
             "owner_id" => $user->id,
             ]
         );
@@ -61,16 +61,18 @@ class RecipeController extends Controller
 
     public function update(Request $request, Recipe $recipe): Response
     {
-        if ($recipe->isEmpty()) return response(["errors" => ["The selected recipe id is invalid."]], 404);
+        if (!$recipe->exists()) return response(["errors" => ["The selected recipe id is invalid."]], 404);
 
         $validator = Validator::make($request->all(), [
             "name" => "string|max:63",
             "description" => "string|max:255",
-            "inspiration_id" => "exists:recipes,id",
+            "inspiration_id" => "prohibited",
             "style_id" => "exists:styles,id",
         ]);
 
         if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
+
+        $recipe->update($request->all());
 
         return response(new RecipeResourceObject($recipe), 200);
     }
@@ -80,6 +82,6 @@ class RecipeController extends Controller
         // BUG Resolve recursive relationships. TLDR; Once a recipe has a recipe that takes inspiration from it, how do we resolve the "parent" recipe being deleted?
         $recipe->delete();
 
-        return response([], 200);
+        return response([], 204);
     }
 }
