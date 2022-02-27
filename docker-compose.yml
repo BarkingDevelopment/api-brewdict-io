@@ -9,12 +9,43 @@ volumes:
         name: db-data
 
 services:
-    app:
+    proxy:
+      image: nginxproxy/nginx-proxy:alpine
+      container_name: nginx-proxy
+      ports:
+        - 80:80
+      volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+      networks:
+        brewdict-network:
+          aliases:
+            - proxy
+
+#    db:
+#      container_name: brewdict-mariadb
+#      image: mariadb
+#      depends_on:
+#        - proxy      
+#      restart: unless-stopped
+#      ports:
+#        - 3306:3306
+#      volumes:
+#        - ./docker-compose/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+#      networks:
+#        brewdict-network:
+#          aliases:
+#            - db
+#      environment:
+#        - VIRTUAL_HOST=db.brewdict.io
+#        - MYSQL_ROOT_PASSWORD=password
+#        - MYSQL_ROOT_HOST=localhost    
+
+    api:
         build:
             context: ./
             dockerfile: Dockerfile
         image: mlbarker/brewdict-api:latest
-        container_name: brewdict-api
+        container_name: brewdict-api      
         restart: unless-stopped
         working_dir: /var/www/
         volumes:
@@ -27,6 +58,8 @@ services:
     nginx:
         image: nginx:alpine
         container_name: api-nginx
+        depends_on:
+          - proxy      
         restart: unless-stopped
         ports:
             - 8000:80
@@ -37,3 +70,5 @@ services:
             brewdict-network:
                 aliases:
                     - nginx
+        environment:
+          - VIRTUAL_HOST=api.brewdict.io
