@@ -32,10 +32,6 @@ class StyleCategory extends Model
         return $this->belongsTo(Style::class);
     }
 
-    /*
-     * Physical relationships.
-     */
-
     /**
      * Gets all the recipes belonging to the style category.
      *

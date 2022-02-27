@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Equipment;
 use App\Models\Fermentation;
 use App\Models\Probe;
+use App\Models\ProbeAssignment;
 use App\Models\ProbeState;
 use App\Models\Reading;
 use App\Models\Recipe;
@@ -12,7 +12,6 @@ use App\Models\Style;
 use App\Models\StyleCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,6 +25,8 @@ class DatabaseSeeder extends Seeder
         $users = User::factory()
             ->count(5)
             ->create();
+
+        $users[] = User::factory()->admin()->create();
 
         $categories = StyleCategory::factory()
             ->count(30)
@@ -68,7 +69,8 @@ class DatabaseSeeder extends Seeder
                 ->get();
 
             // Fermentations
-            for ($i = 0; $i < 15; $i++) {
+            for ($i = 0; $i < 10; $i++) {
+                $p = $probes->random(1)->first()->id;
                 Fermentation::factory()
                     ->state([
                         "recipe_id" => $recipes->random(1)->first()->id
@@ -76,10 +78,10 @@ class DatabaseSeeder extends Seeder
                     // Readings
                     ->has(Reading::factory()
                         ->state([
-                            "probe_id" => $probes->random(1)->first()->id
+                            "probe_id" => $p,
                         ])
                         ->count(15)
-                    )->for($u, "brewer")
+                    )
                     ->create();
             }
         }

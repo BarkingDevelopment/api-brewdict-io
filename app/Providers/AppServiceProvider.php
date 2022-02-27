@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\Identifiers\ResourceIdentifier;
+use App\Http\Resources\Objects\ResourceObject;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        ResourceIdentifier::withoutWrapping();
+        ResourceObject::withoutWrapping();
     }
 }

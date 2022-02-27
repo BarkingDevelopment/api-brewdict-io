@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Objects\ReadingResourceObject;
+use App\Http\Resources\ReadingCollection;
 use App\Http\Resources\ReadingResource;
 use App\Models\Reading;
 use Illuminate\Http\Request;
@@ -14,18 +16,21 @@ use Illuminate\Http\Response;
  */
 class ReadingController extends Controller
 {
-    /**
-     * @inheritDoc
-     */
+    /*
+     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
+    public function __construct()
+    {
+        $this->authorizeResource(Reading::class);
+    }
+    */
+
     public function index(): Response
     {
         $readings = Reading::all();
-        return response([ "readings" => ReadingResource::collection($readings), "message" => "Retrieved successfully."], 200);
+        return response(new ReadingCollection($readings), 200);
     }
 
     /**
-     * @inheritDoc
-     *
      * TODO Adaptor for type of probe.
      * TODO Entry value and unit verification.
      */
@@ -33,35 +38,25 @@ class ReadingController extends Controller
     {
         $reading = Reading::create($request->all());
 
-        return response(["reading" => new ReadingResource($reading), "message" => "$reading->id created successfully"], 201);
+        return response(new ReadingResourceObject($reading), 201);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function show(Reading $reading): Response
     {
-        return response(["reading" => new ReadingResource($reading), "message" => "$reading->id retrieved successfully"], 200);
+        return response(new ReadingResource($reading), 200);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function update(Request $request, Reading $reading): Response
     {
         $reading->update($request->all());
 
-        return response(["reading" => new ReadingResource($reading), "message" => "$reading->id updated successfully."], 200);
-
+        return response(new ReadingResourceObject($reading), 200);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function destroy(Reading $reading): Response
     {
         $reading->delete();
 
-        return response(["message" => "$reading->id deleted"], 200);
+        return response([],204);
     }
 }

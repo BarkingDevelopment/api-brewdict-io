@@ -17,7 +17,7 @@ class ProbeFactory extends Factory
         return [
             "mac" => $this->faker->macAddress(),
             "name" => $this->faker->name(),
-            "colour" => $this->faker->colorName(),
+            "colour" => $this->faker->safeColorName(),
         ];
     }
 }

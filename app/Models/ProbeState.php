@@ -33,7 +33,7 @@ class ProbeState extends Model
      *
      * @return BelongsTo
      */
-    public function recipe()
+    public function probe()
     {
         return $this->belongsTo(Probe::class);
     }

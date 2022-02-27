@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RecipeState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,19 @@ class Recipe extends Model
      * @var string
      */
     protected $table = 'recipes';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'name',
+        'description',
+        'owner_id',
+        'inspiration_id',
+        'style_id',
+    ];
 
     /*
      * Physical relationships.
@@ -61,5 +75,19 @@ class Recipe extends Model
     public function fermentations()
     {
         return $this->hasMany(Fermentation::class);
+    }
+
+    /*
+     * Functions
+     */
+
+    /**
+     * Returns true if the recipe is private or not.
+     *
+     * @return bool
+     */
+    public function isPrivate()
+    {
+        return $this->state == RecipeState::Draft || $this->state == RecipeState::Private;
     }
 }

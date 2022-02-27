@@ -19,6 +19,18 @@ class Fermentation extends Model
      */
     protected $table = 'fermentations';
 
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'recipe_id',
+        'brewed_by',
+        'started_at',
+    ];
+
     /*
      * Physical relationships.
      */
@@ -44,13 +56,23 @@ class Fermentation extends Model
     }
 
     /**
+     * Gets the recipe of the fermentation.
+     *
+     * @return BelongsTo
+     */
+    public function equipment()
+    {
+        return $this->belongsTo(Equipment::class);
+    }
+
+    /**
      * Gets the probes involved in recording data for the fermentation.
      *
      * @return HasManyThrough
      */
     public function probes()
     {
-        return $this->hasManyThrough(Probe::class, ProbeAssignment::class);
+        return $this->hasManyThrough(Probe::class, ProbeAssignment::class, "probe_id", "id");
     }
 
     /**

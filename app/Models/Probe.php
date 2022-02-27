@@ -34,7 +34,7 @@ class Probe extends Model
         return $this->belongsTo(User::class, "owner_id");
     }
 
-    /**
+    /**own
      * Gets all the readings of the probe.
      *
      * @return HasMany
@@ -86,5 +86,15 @@ class Probe extends Model
     public function status()
     {
         return $this->hasOne(ProbeState::class)->latestOfMany("recorded_at", "max");
+    }
+
+    /**
+     * Gets the current status reading of the probe.
+     *
+     * @return HasOne
+     */
+    public function latestReading()
+    {
+        return $this->hasOne(Reading::class)->latestOfMany("recorded_at", "max");
     }
 }

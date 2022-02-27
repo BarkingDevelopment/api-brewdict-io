@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Objects\ProbeResourceObject;
+use App\Http\Resources\ProbeCollection;
 use App\Http\Resources\ProbeResource;
 use App\Models\Probe;
 use Illuminate\Http\Request;
@@ -14,48 +16,58 @@ use Illuminate\Http\Response;
  */
 class ProbeController extends Controller
 {
+    /*
+     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
+    public function __construct()
+    {
+        $this->authorizeResource(Probe::class);
+    }
+    */
+
     /**
-     * @inheritDoc
+     * @return Response
      */
     public function index(): Response
     {
         $probes = Probe::all();
-        return response([ "probes" => ProbeResource::collection($probes), "message" => "Retrieved successfully."], 200);
+        return response(new ProbeCollection($probes), 200);
     }
 
     /**
-     * @inheritDoc
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request): Response
     {
         $probe = Probe::create($request->all());
 
-        return response(["probe" => new ProbeResource($probe), "message" => "$probe->name created successfully"], 201);
+        return response(new ProbeResourceObject($probe), 201);
     }
 
     /**
-     * @inheritDoc
-     *
-     * TODO Add last probe state and reading to JSON.
+     * @param Probe $probe
+     * @return Response
      */
     public function show(Probe $probe): Response
     {
-        return response(["probe" => new ProbeResource($probe), "message" => "$probe->name retrieved successfully"], 200);
+        return response(new ProbeResource($probe), 200);
     }
 
     /**
-     * @inheritDoc
+     * @param Request $request
+     * @param Probe $probe
+     * @return Response
      */
     public function update(Request $request, Probe $probe): Response
     {
         $probe->update($request->all());
 
-        return response(["probe" => new ProbeResource($probe), "message" => "$probe->name updated successfully."], 200);
-
+        return response(["message" => "$probe->name updated successfully.", "probe" => new ProbeResource($probe)], 200);
     }
 
     /**
-     * @inheritDoc
+     * @param Probe $probe
+     * @return Response
      */
     public function destroy(Probe $probe): Response
     {

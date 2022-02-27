@@ -3,64 +3,85 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Objects\RecipeResourceObject;
+use App\Http\Resources\RecipeCollection;
 use App\Http\Resources\RecipeResource;
 use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class RecipeController extends Controller
 {
-    /**
-     * @inheritDoc
-     *
-     * TODO Hide private recipes unless owner wants them.
-     */
+    /*
+     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
+    public function __construct()
+    {
+        $this->authorizeResource(Recipe::class);
+    }
+    */
+
     public function index(): Response
     {
         $recipes = Recipe::all();
-        return response([ "recipes" => RecipeResource::collection($recipes), "message" => "Retrieved successfully."], 200);
+        return response(new RecipeCollection($recipes), 200);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function store(Request $request): Response
+    public function store(Request $request, User $user): Response
     {
-        //TODO Variable validation.
-        $recipe = Recipe::create($request->all());
+        $validator = Validator::make($request->all(), [
+            "name" => "required|string|max:63",
+            "description" => "required|string|max:255",
+            "inspiration_id" => "required_without:style_id|prohibits:style_id|exists:recipes,id",
+            "style_id" => "required_without:inspiration_id|prohibits:inspiration_id|exists:styles,id",
+        ]);
 
-        return response(["recipe" => new RecipeResource($recipe), "message" => "$recipe->name created successfully"], 201);
+        if ($validator->fails())
+        {
+            return response(["errors" => $validator->errors()->all()], 422);
+        }
+
+        $recipe = Recipe::create([
+            "name" => $request->name,
+            "description" => $request->description,
+            "inspiration_id" => $request->inspiration_id,
+            "style_id" => $request->style_id ?? Recipe::where("id", $request->inspiration_id)->first()->style_id,
+            "owner_id" => $user->id,
+            ]
+        );
+
+        return response(new RecipeResourceObject($recipe), 201);
     }
 
-    /**
-     * @inheritDoc
-     *
-     * TODO Hide private recipes unless owner wants them.
-     * TODO Add include owner and style.
-     */
     public function show(Recipe $recipe): Response
     {
-        return response(["recipe" => new RecipeResource($recipe), "message" => "$recipe->name retrieved successfully"], 200);
+        return response(new RecipeResource($recipe), 200);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function update(Request $request, Recipe $recipe): Response
     {
+        if (!$recipe->exists()) return response(["errors" => ["The selected recipe id is invalid."]], 404);
+
+        $validator = Validator::make($request->all(), [
+            "name" => "string|max:63",
+            "description" => "string|max:255",
+            "inspiration_id" => "prohibited",
+            "style_id" => "exists:styles,id",
+        ]);
+
+        if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
+
         $recipe->update($request->all());
 
-        return response(["recipe" => new RecipeResource($recipe), "message" => "$recipe->name updated successfully."], 200);
-
+        return response(new RecipeResourceObject($recipe), 200);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function destroy(Recipe $recipe): Response
     {
+        // BUG Resolve recursive relationships. TLDR; Once a recipe has a recipe that takes inspiration from it, how do we resolve the "parent" recipe being deleted?
         $recipe->delete();
 
-        return response(["message" => "$recipe->name deleted"], 200);
+        return response([], 204);
     }
 }

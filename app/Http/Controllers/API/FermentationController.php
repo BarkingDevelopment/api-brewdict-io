@@ -3,92 +3,131 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FermentationCollection;
 use App\Http\Resources\FermentationResource;
+use App\Http\Resources\Objects\FermentationResourceObject;
+use App\Http\Resources\Objects\ProbeResourceObject;
 use App\Models\Fermentation;
 use App\Models\ProbeAssignment;
 use App\Models\Probe;
+use App\Models\User;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class FermentationController extends Controller
 {
-    /**
-     * @inheritDoc
-     */
+    /*
+     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
+    public function __construct()
+    {
+        $this->authorizeResource(Fermentation::class);
+    }
+    */
+
     public function index(): Response
     {
-        $ferments = Fermentation::all();
-        return response([ "ferments" => FermentationResource::collection($ferments), "message" => "Retrieved successfully."], 200);
+        $fermentations = Fermentation::all();
+        return response(new FermentationCollection($fermentations), 200);
+    }
+
+    public function store(Request $request, User $user): Response
+    {
+        $validator = Validator::make($request->all(), [
+            "recipe_id" => "required|exists:recipes,id",
+            "brewed_by" => "prohibited",
+            "equipment_id" => "prohibited",
+            "started_At" => "prohibited",
+        ]);
+
+        if ($validator->fails())
+        {
+            return response(["errors" => $validator->errors()->all()], 422);
+        }
+
+        $ferment = Fermentation::create([
+            "recipe_id" => $request->recipe_id,
+            "brewed_by" => $user->id,
+        ]);
+
+        return response( new FermentationResourceObject($ferment), 201);
+    }
+
+    public function show(Fermentation $fermentation): Response
+    {
+        return response(new FermentationResource($fermentation), 200);
+    }
+
+    public function update(Request $request, Fermentation $fermentation): Response
+    {
+        if (!$fermentation->exists()) return response(["errors" => ["The selected fermentation id is invalid."]], 404);
+
+        /**
+         * Update path currently disabled via routing.
+         * If the fermentation ever needs to be updated, the validator here can be changed.
+         */
+        $validator = Validator::make($request->all(), [
+            "recipe_id" => "prohibited",
+            "brewed_by" => "prohibited",
+            "equipment_id" => "prohibited",
+            "started_at" => "prohibited",
+        ]);
+
+        if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
+
+        $fermentation->update($request->all());
+
+        return response(new FermentationResourceObject($fermentation), 200);
+    }
+
+    public function destroy(Fermentation $fermentation): Response
+    {
+        $fermentation->delete();
+
+        return response([], 204);
     }
 
     /**
-     * @inheritDoc
+     * @param Fermentation $fermentation
      */
-    public function store(Request $request): Response
+    public function start(Fermentation $fermentation)
     {
-        //TODO Variable validation.
-        $ferment = Fermentation::create($request->all());
-        $name = $ferment->recipe()->name;
+        if (is_null($fermentation->started_at))
+        {
+            $fermentation->update([
+                "started_at" => date('Y-m-d H:i:s')
+            ]);
 
-        return response(["ferment" => new FermentationResource($ferment), "message" => "$name ferment created successfully"], 201);
+            return response(new FermentationResourceObject($fermentation), 200);
+        }
+        else {
+            return response(["errors" => ["Fermentation already started."]], 403);
+        }
     }
-
-    /**
-     * @inheritDoc
-     *
-     * TODO Add include recipe.
-     */
-    public function show(Fermentation $ferment): Response
-    {
-        $name = $ferment->recipe()->name;
-
-        return response(["ferment" => new FermentationResource($ferment), "message" => "$name ferment retrieved successfully"], 200);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function update(Request $request, Fermentation $ferment): Response
-    {
-        $ferment->update($request->all());
-        $name = $ferment->recipe()->name;
-
-        return response(["ferment" => new FermentationResource($ferment), "message" => "$name ferment updated successfully."], 200);
-
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function destroy(Fermentation $ferment): Response
-    {
-        $name = $ferment->recipe()->name;
-        $ferment->delete();
-
-        return response(["message" => "$name ferment deleted"], 200);
-    }
-
 
     /**
      * Adds a probe to a ferment.
      *
      * @param Request $request
      * @param Fermentation $ferment
+     * @return Application|ResponseFactory|Response
      */
-    public function add(Request $request, Fermentation $ferment)
+    public function add(Request $request, Fermentation $fermentation)
     {
         $probe = $this->getProbe($request);
 
         if(ProbeAssignment::where("probe_id", $probe->id)->count() === 0 ) {
             $probe_assign = new ProbeAssignment();
-            $probe_assign->fermentation_id = $ferment->id;
+            $probe_assign->fermentation_id = $fermentation->id;
             $probe_assign->probe_id = $probe->id;
             $probe_assign->save();
 
-            return response(["message" => "$probe->name assigned to $ferment->id successfully."], 201);
+            return response(new ProbeResourceObject($probe), 201);
         }
         else{
-            return response(["message" => "$probe->name is already assigned to a fermentation."], 409);
+            return response(new ProbeResourceObject($probe), 409);
         }
     }
 
@@ -97,18 +136,25 @@ class FermentationController extends Controller
      *
      * @param Request $request
      * @param Fermentation $ferment
+     * @return Application|ResponseFactory|Response
      */
-    public function remove(Request $request, Fermentation $ferment)
+    public function remove(Request $request, Fermentation $fermentation)
     {
         $probe = $this->getProbe($request);
 
-        ProbeAssignment::where("fermentation_id", $ferment->id)
+        ProbeAssignment::where("fermentation_id", $fermentation->id)
                         ->where("probe_id", $probe->id)
                         ->delete();
 
-        return response(["message" => "$probe->name successfully deleted from $ferment->id."], 200);
+        return response(new ProbeResourceObject($probe), 200);
     }
 
+    /**
+     * Get the probe object from a request.
+     *
+     * @param Request $request
+     * @return mixed
+     */
     private function getProbe(Request $request)
     {
         $probe_id = $request->input("id");
