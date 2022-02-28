@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Objects\TokenResourceObject;
 use App\Http\Resources\Objects\UserResourceObject;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,8 +22,8 @@ class ApiAuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "username" => "required|string|max:63|unique:users",
-            "email" => "required|email|string|max:255|unique:users",
+            "username" => "required|alpha_dash|max:31|unique:users",
+            "email" => "required|email|max:63|unique:users",
             "password" => ["required", "string", Password::min(7)->mixedCase()->numbers()->symbols(), "confirmed"],
         ]);
 
@@ -36,17 +37,24 @@ class ApiAuthController extends Controller
 
         $user = User::create($request->toArray());
 
-        $token = $user->createToken(self::TOKEN_NAME)->accessToken;
+        $token = $user->createToken(self::TOKEN_NAME);
 
-        // TODO Enforce email verification.
-        return response(["data" => new UserResourceObject($user), "related" => ["access_token" => $token]], 201);
+        // TODO Enforce email verification. Don't return access token on registration.
+        return response([
+            "data" => new UserResourceObject($user),
+            "related" => [
+                "access_token" => [
+                    "data" => new TokenResourceObject($token)
+                ]
+            ],
+        ], 201)->header("Cache-Control", "no-store");
     }
 
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "username" => "required_without:email|string|max:63",
-            "email" => "required_without:username|email|max:255",
+            "username" => "required_without:email|string|max:31",
+            "email" => "required_without:username|email|max:63",
             "password" => "required|string|min:7"
         ]);
 
@@ -54,10 +62,17 @@ class ApiAuthController extends Controller
             $user = User::where("username", $request->username)->orWhere("email", $request->email)->first();
 
             if ($user) {
-                // TODO: Identified sending plain text password over the internet. Why did I think this was a good idea? Compare the password sent with the hashed password stored in the db. Get the client to hash the password before sending.
+                // FIXME: Identified sending plain text password over the internet. Why did I think this was a good idea? Compare the password sent with the hashed password stored in the db. Get the client to hash the password before sending.
                 if (Hash::check($request->password, $user->password)) {
-                    $token = $user->createToken(self::TOKEN_NAME)->accessToken;
-                    return response(["data" => new UserResourceObject($user), "related" => ["access_token" => $token]], 200);
+                    $token = $user->createToken(self::TOKEN_NAME);
+                    return response([
+                        "data" => new UserResourceObject($user),
+                        "related" => [
+                            "access_token" => [
+                                "data" => new TokenResourceObject($token)
+                            ]
+                        ],
+                    ], 200)->header("Cache-Control", "no-store");
 
                 } else { $errorResponse = ["errors" => "Login failed, please check your details."]; }
 
