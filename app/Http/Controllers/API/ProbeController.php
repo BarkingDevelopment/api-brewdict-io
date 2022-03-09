@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Objects\ProbeResourceObject;
-use App\Http\Resources\ProbeCollection;
+use App\Http\Resources\Collections\ProbeCollection;
 use App\Http\Resources\ProbeResource;
 use App\Models\Probe;
 use Illuminate\Http\Request;

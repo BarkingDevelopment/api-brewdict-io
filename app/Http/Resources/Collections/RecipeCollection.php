@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Collections;
 
-use App\Http\Resources\Objects\UserResourceObject;
+use App\Http\Resources\Objects\RecipeResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use JsonSerializable;
 
-class UserCollection extends ResourceCollection
+class RecipeCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -18,20 +18,10 @@ class UserCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return UserResourceObject::collection($this->collection);
-    }
-
-    /**
-     * @inheritDoc
-     *
-     *  TODO Need to add link urls.
-     */
-    public function with($request)
-    {
         return [
+            "data" => RecipeResourceObject::collection($this->collection),
             "links" => [
-                "self" => "",
-                "related" => "",
+                "self" => $_ENV["APP_URL"] . "/api/" . RecipeResourceObject::TYPE,
             ],
         ];
     }

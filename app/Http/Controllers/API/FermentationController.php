@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\FermentationCollection;
+use App\Http\Resources\Collections\FermentationCollection;
 use App\Http\Resources\FermentationResource;
 use App\Http\Resources\Objects\FermentationResourceObject;
 use App\Http\Resources\Objects\ProbeResourceObject;

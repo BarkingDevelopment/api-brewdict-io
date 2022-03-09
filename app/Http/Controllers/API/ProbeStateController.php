@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProbeStateResource;
 use App\Http\Resources\Objects\ProbeStateResourceObject;
-use App\Http\Resources\ProbeStateCollection;
+use App\Http\Resources\Collections\ProbeStateCollection;
 use App\Models\ProbeState;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

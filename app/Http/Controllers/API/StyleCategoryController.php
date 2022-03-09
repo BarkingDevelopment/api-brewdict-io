@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Objects\StyleCategoryResourceObject;
-use App\Http\Resources\StyleCategoryCollection;
+use App\Http\Resources\Collections\StyleCategoryCollection;
 use App\Http\Resources\StyleCategoryResource;
 use App\Models\StyleCategory;
 use Illuminate\Http\Request;
