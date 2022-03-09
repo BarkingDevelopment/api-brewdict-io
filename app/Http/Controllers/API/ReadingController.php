@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Objects\ReadingResourceObject;
-use App\Http\Resources\ReadingCollection;
+use App\Http\Resources\Collections\ReadingCollection;
 use App\Http\Resources\ReadingResource;
 use App\Models\Reading;
 use Illuminate\Http\Request;

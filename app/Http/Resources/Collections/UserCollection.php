@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Collections;
 
-use App\Http\Resources\Objects\StyleResourceObject;
+use App\Http\Resources\Objects\UserResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use JsonSerializable;
 
-class StyleCollection extends ResourceCollection
+class UserCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -18,7 +18,7 @@ class StyleCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return StyleResourceObject::collection($this->collection);
+        return UserResourceObject::collection($this->collection);
     }
 
     /**

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Collections;
 
-use App\Http\Resources\Objects\ProbeStateResourceObject;
+use App\Http\Resources\Objects\ProbeResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use JsonSerializable;
 
-class ProbeStateCollection extends ResourceCollection
+class ProbeCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -18,7 +18,7 @@ class ProbeStateCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return ProbeStateResourceObject::collection($this->collection);
+        return ProbeResourceObject::collection($this->collection);
     }
 
     /**

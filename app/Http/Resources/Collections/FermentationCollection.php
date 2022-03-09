@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Collections;
 
 use App\Http\Resources\Objects\FermentationResourceObject;
 use Illuminate\Contracts\Support\Arrayable;

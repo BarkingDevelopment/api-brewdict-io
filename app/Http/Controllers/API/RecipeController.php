@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Objects\RecipeResourceObject;
-use App\Http\Resources\RecipeCollection;
+use App\Http\Resources\Collections\RecipeCollection;
 use App\Http\Resources\RecipeResource;
 use App\Models\Recipe;
 use App\Models\User;
