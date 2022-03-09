@@ -4,7 +4,6 @@ namespace App\Http\Resources\Objects;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Laravel\Passport\Passport;
 
 class TokenResourceObject extends JsonResource
 {
@@ -19,8 +18,12 @@ class TokenResourceObject extends JsonResource
     public function toArray($request)
     {
         return [
-            "token_type" => "Bearer",
-            "token" => $this->accessToken,
+            "type" => self::TYPE,
+            "id" => $this->id,
+            "attributes" => [
+                "token_type" => "Bearer",
+                "token" => $this->accessToken,
+            ]
         ];
     }
 }
