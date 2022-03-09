@@ -19,7 +19,7 @@ class TokenResourceObject extends JsonResource
     {
         return [
             "type" => self::TYPE,
-            "id" => $this->id,
+            "id" => null,
             "attributes" => [
                 "token_type" => "Bearer",
                 "token" => $this->accessToken,
