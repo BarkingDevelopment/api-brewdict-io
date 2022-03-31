@@ -2,9 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Objects\FermentationResourceObject;
-use App\Http\Resources\Objects\ProbeResourceObject;
-use App\Http\Resources\Objects\ReadingResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,19 +17,16 @@ class ReadingResource extends JsonResource
      */
     public function toArray($request)
     {
-        return new ReadingResourceObject($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function with($request)
-    {
         return [
-            "included" => array_merge(
-                new FermentationResourceObject($this->fermentation()),
-                new ProbeResourceObject($this->probe()),
-            )
+            "id" => $this->id,
+            "recorded_at" => $this->recorded_at,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "fermentation" => new FermentationObject($this->fermentation),
+            "probe" => new ProbeObject($this->probe),
+            "type" => $this->type,
+            "value" => $this->value,
+            "units" => $this->units,
         ];
     }
 }

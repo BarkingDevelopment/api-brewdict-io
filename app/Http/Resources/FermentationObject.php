@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 
-class RecipeResource extends JsonResource
+class FermentationObject extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,11 +21,10 @@ class RecipeResource extends JsonResource
             "id" => $this->id,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
-            "owner" => new UserResource($this->owner),
-            "name" => $this->name,
-            "description" => $this->description,
-            "inspiration" => !is_null($this->parent) ? new RecipeObject($this->parent) : "null",
-            "style" => new StyleResource($this->style)
+            "recipe" => new RecipeObject($this->recipe),
+            "brewer" => new LoggedInUserObject($this->brewer),
+            "equipment" => !is_null($this->equipment) ? new EquipmentResource($this->equipment) : "null",
+            "started_at" => $this->started_at
         ];
     }
 }

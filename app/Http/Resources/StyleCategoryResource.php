@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Objects\StyleCategoryResourceObject;
-use App\Http\Resources\Objects\StyleResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,18 +17,15 @@ class StyleCategoryResource extends JsonResource
      */
     public function toArray($request)
     {
-        return new StyleResourceObject($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function with($request)
-    {
         return [
-            "included" => array_merge(
-                StyleCategoryResourceObject::collection($this->styles()),
-            ),
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "name" => $this->name,
+            "description" => $this->description,
+            "number" => $this->number,
+            "style_guide" => $this->style_guide,
+            "styles" => new StyleResourceCollection($this->styles)
         ];
     }
 }

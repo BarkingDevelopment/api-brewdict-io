@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Objects\ProbeResourceObject;
-use App\Http\Resources\Objects\ProbeStateResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,18 +17,12 @@ class ProbeStateResource extends JsonResource
      */
     public function toArray($request)
     {
-        return new ProbeStateResourceObject($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function with($request)
-    {
         return [
-            "included" => array_merge(
-                new ProbeResourceObject($this->probe()),
-            )
+            "id" => $this->id,
+            "recorded_at" => $this->recorded_at,
+            "probe" => new ProbeObject($this->probe),
+            "battery" => $this->battery,
+            "signal_strength" => $this->signal_strength,
         ];
     }
 }

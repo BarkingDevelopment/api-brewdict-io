@@ -2,12 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Objects\EquipmentResourceObject;
-use App\Http\Resources\Objects\FermentationResourceObject;
-use App\Http\Resources\Objects\ProbeResourceObject;
-use App\Http\Resources\Objects\ReadingResourceObject;
-use App\Http\Resources\Objects\RecipeResourceObject;
-use App\Http\Resources\Objects\UserResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -24,17 +18,15 @@ class FermentationResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "data" => new FermentationResourceObject($this),
-            "links" => [
-                "self" => $_ENV["APP_URL"] . "/api/" . FermentationResourceObject::TYPE,
-            ],
-            "included" => [
-                new RecipeResourceObject($this->recipe),
-                new UserResourceObject($this->brewer),
-                new EquipmentResourceObject($this->equipment),
-                ProbeResourceObject::collection($this->probes),
-                ReadingResourceObject::collection($this->readings),
-            ]
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "recipe" => new RecipeObject($this->recipe),
+            "brewer" => new LoggedInUserObject($this->brewer),
+            "equipment" => !is_null($this->equipment) ? new EquipmentResource($this->equipment) : "null",
+            "started_at" => $this->started_at,
+            "probes" => ProbeObject::collection($this->probes),
+            "readings" => ReadingObject::collection($this->readings)
         ];
     }
 }

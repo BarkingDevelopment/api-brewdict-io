@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Collections\FermentationCollection;
+use App\Http\Resources\FermentationObject;
 use App\Http\Resources\FermentationResource;
-use App\Http\Resources\Objects\FermentationResourceObject;
-use App\Http\Resources\Objects\ProbeResourceObject;
 use App\Models\Fermentation;
 use App\Models\ProbeAssignment;
 use App\Models\Probe;
@@ -25,12 +23,12 @@ class FermentationController extends Controller
     {
         $this->authorizeResource(Fermentation::class);
     }
-    */
+
 
     public function index(): Response
     {
         $fermentations = Fermentation::all();
-        return response(new FermentationCollection($fermentations), 200);
+        return response(FermentationObject::collection($fermentations), 200);
     }
 
     public function store(Request $request, User $user): Response
@@ -52,7 +50,7 @@ class FermentationController extends Controller
             "brewed_by" => $user->id,
         ]);
 
-        return response( new FermentationResourceObject($ferment), 201);
+        return response( new FermentationResource($ferment), 201);
     }
 
     public function show(Fermentation $fermentation): Response
@@ -79,7 +77,7 @@ class FermentationController extends Controller
 
         $fermentation->update($request->all());
 
-        return response(new FermentationResourceObject($fermentation), 200);
+        return response(new FermentationResource($fermentation), 200);
     }
 
     public function destroy(Fermentation $fermentation): Response
@@ -100,7 +98,7 @@ class FermentationController extends Controller
                 "started_at" => date('Y-m-d H:i:s')
             ]);
 
-            return response(new FermentationResourceObject($fermentation), 200);
+            return response(new FermentationResource($fermentation), 200);
         }
         else {
             return response(["errors" => ["Fermentation already started."]], 403);
@@ -124,10 +122,10 @@ class FermentationController extends Controller
             $probe_assign->probe_id = $probe->id;
             $probe_assign->save();
 
-            return response(new ProbeResourceObject($probe), 201);
+            return response(new FermentationResource($probe), 201);
         }
         else{
-            return response(new ProbeResourceObject($probe), 409);
+            return response(new FermentationResource($probe), 409);
         }
     }
 
@@ -146,7 +144,7 @@ class FermentationController extends Controller
                         ->where("probe_id", $probe->id)
                         ->delete();
 
-        return response(new ProbeResourceObject($probe), 200);
+        return response(new FermentationResource($probe), 200);
     }
 
     /**

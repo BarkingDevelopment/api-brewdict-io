@@ -2,10 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Objects\FermentationResourceObject;
-use App\Http\Resources\Objects\ProbeResourceObject;
-use App\Http\Resources\Objects\RecipeResourceObject;
-use App\Http\Resources\Objects\UserResourceObject;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,20 +17,15 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        return new UserResourceObject($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function with($request)
-    {
         return [
-            "included" => array_merge(
-                RecipeResourceObject::collection($this->recipes()),
-                FermentationResourceObject::collection($this->fermentations()),
-                ProbeResourceObject::collection($this->probes()),
-            ),
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "username" => $this->username,
+            "email" => $this->email,
+            "recipes" => RecipeObject::collection($this->recipes),
+            "fermentations" => FermentationObject::collection($this->fermentations),
+            "probes" => ProbeObject::collection($this->probes)
         ];
     }
 }

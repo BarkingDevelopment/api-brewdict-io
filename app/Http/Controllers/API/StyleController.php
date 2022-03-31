@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Objects\StyleResourceObject;
-use App\Http\Resources\Collections\StyleCollection;
 use App\Http\Resources\StyleResource;
 use App\Models\Style;
 use Illuminate\Http\Request;
@@ -26,7 +24,7 @@ class StyleController extends Controller
     public function index(): Response
     {
         $styles = Style::all();
-        return response(new StyleCollection($styles), 200);
+        return response(StyleResource::collection($styles), 200);
     }
 
     public function store(Request $request): Response
@@ -34,7 +32,7 @@ class StyleController extends Controller
         //TODO Variable validation.
         $style = Style::create($request->all());
 
-        return response(new StyleResourceObject($style), 201);
+        return response(new StyleResource($style), 201);
     }
 
     public function show(Style $style): Response
@@ -46,7 +44,7 @@ class StyleController extends Controller
     {
         $style->update($request->all());
 
-        return response(new StyleResourceObject($style), 200);
+        return response(new StyleResource($style), 200);
 
     }
 

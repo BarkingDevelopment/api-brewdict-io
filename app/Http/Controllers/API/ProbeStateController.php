@@ -4,8 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProbeStateResource;
-use App\Http\Resources\Objects\ProbeStateResourceObject;
-use App\Http\Resources\Collections\ProbeStateCollection;
 use App\Models\ProbeState;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,7 +24,7 @@ class ProbeStateController extends Controller
     public function index(): Response
     {
         $probeStates = ProbeState::all();
-        return response(new ProbeStateCollection($probeStates), 200);
+        return response(ProbeStateResource::collection($probeStates), 200);
     }
 
     public function store(Request $request): Response
@@ -34,7 +32,7 @@ class ProbeStateController extends Controller
         //TODO Variable validation.
         $probeState = ProbeState::create($request->all());
 
-        return response(new ProbeStateResourceObject($probeState), 201);
+        return response(new ProbeStateResource($probeState), 201);
     }
 
     public function show(ProbeState $probeState): Response
@@ -46,7 +44,7 @@ class ProbeStateController extends Controller
     {
         $probeState->update($request->all());
 
-        return response(new ProbeStateResourceObject($probeState), 200);
+        return response(new ProbeStateResource($probeState), 200);
 
     }
 

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Objects\ProbeResourceObject;
-use App\Http\Resources\Collections\ProbeCollection;
+use App\Http\Resources\ProbeObject;
 use App\Http\Resources\ProbeResource;
 use App\Models\Probe;
 use Illuminate\Http\Request;
@@ -30,7 +29,7 @@ class ProbeController extends Controller
     public function index(): Response
     {
         $probes = Probe::all();
-        return response(new ProbeCollection($probes), 200);
+        return response(ProbeObject::collection($probes), 200);
     }
 
     /**
@@ -41,7 +40,7 @@ class ProbeController extends Controller
     {
         $probe = Probe::create($request->all());
 
-        return response(new ProbeResourceObject($probe), 201);
+        return response(new ProbeResource($probe), 201);
     }
 
     /**
@@ -62,7 +61,7 @@ class ProbeController extends Controller
     {
         $probe->update($request->all());
 
-        return response(["message" => "$probe->name updated successfully.", "probe" => new ProbeResource($probe)], 200);
+        return response(new ProbeResource($probe), 200);
     }
 
     /**
@@ -73,6 +72,6 @@ class ProbeController extends Controller
     {
         $probe->delete();
 
-        return response(["message" => "$probe->name deleted"], 200);
+        return response([], 200);
     }
 }

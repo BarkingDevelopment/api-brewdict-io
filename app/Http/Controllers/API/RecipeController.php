@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Objects\RecipeResourceObject;
-use App\Http\Resources\Collections\RecipeCollection;
+use App\Http\Resources\RecipeObject;
 use App\Http\Resources\RecipeResource;
 use App\Models\Recipe;
 use App\Models\User;
@@ -25,7 +24,7 @@ class RecipeController extends Controller
     public function index(): Response
     {
         $recipes = Recipe::all();
-        return response(new RecipeCollection($recipes), 200);
+        return response(RecipeObject::collection($recipes), 200);
     }
 
     public function store(Request $request, User $user): Response
@@ -51,7 +50,7 @@ class RecipeController extends Controller
             ]
         );
 
-        return response(new RecipeResourceObject($recipe), 201);
+        return response(new RecipeResource($recipe), 201);
     }
 
     public function show(Recipe $recipe): Response
@@ -74,7 +73,7 @@ class RecipeController extends Controller
 
         $recipe->update($request->all());
 
-        return response(new RecipeResourceObject($recipe), 200);
+        return response(new RecipeResource($recipe), 200);
     }
 
     public function destroy(Recipe $recipe): Response
