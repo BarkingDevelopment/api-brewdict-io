@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Collections\UserCollection;
-use App\Http\Resources\Objects\UserResourceObject;
+use App\Http\Resources\LoggedInUserObject;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,7 +25,7 @@ class UserController extends Controller
     public function index(): Response
     {
         $users = User::all();
-        return response(new UserCollection($users), 200);
+        return response(LoggedInUserObject::collection($users), 200);
     }
 
     /**
@@ -36,7 +35,7 @@ class UserController extends Controller
     {
         $user = User::create($request->all());
 
-        return response(new UserResourceObject($user), 201);
+        return response(new UserResource($user), 201);
     }
 
     /**
@@ -54,7 +53,7 @@ class UserController extends Controller
     {
         $user->update($request->all());
 
-        return response(new UserResourceObject($user), 200);
+        return response(new UserResource($user), 200);
 
     }
 

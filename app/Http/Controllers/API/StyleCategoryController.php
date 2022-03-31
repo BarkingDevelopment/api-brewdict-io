@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Objects\StyleCategoryResourceObject;
-use App\Http\Resources\Collections\StyleCategoryCollection;
+use App\Http\Resources\StyleCategoryObject;
 use App\Http\Resources\StyleCategoryResource;
 use App\Models\StyleCategory;
 use Illuminate\Http\Request;
@@ -26,7 +25,7 @@ class StyleCategoryController extends Controller
     public function index(): Response
     {
         $styleCategorys = StyleCategory::all();
-        return response(new StyleCategoryCollection($styleCategorys), 200);
+        return response(StyleCategoryObject::collection($styleCategorys), 200);
     }
 
     /**
@@ -37,7 +36,7 @@ class StyleCategoryController extends Controller
         //TODO Variable validation.
         $styleCategory = StyleCategory::create($request->all());
 
-        return response(new StyleCategoryResourceObject($styleCategory), 201);
+        return response(new StyleCategoryResource($styleCategory), 201);
     }
 
     /**
@@ -55,7 +54,7 @@ class StyleCategoryController extends Controller
     {
         $styleCategory->update($request->all());
 
-        return response(new StyleCategoryResourceObject($styleCategory), 200);
+        return response(new StyleCategoryResource($styleCategory), 200);
 
     }
 

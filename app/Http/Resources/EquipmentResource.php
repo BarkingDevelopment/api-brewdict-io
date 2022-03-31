@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Identifiers;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-trait ResourceIdentifier
+class EquipmentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,8 +16,9 @@ trait ResourceIdentifier
     public function toArray($request)
     {
         return [
-            "type" => self::$TYPE,
             "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Objects\ReadingResourceObject;
 use App\Http\Resources\Collections\ReadingCollection;
-use App\Http\Resources\ReadingResource;
+use App\Http\Resources\ReadingObject;
 use App\Models\Reading;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -43,7 +43,7 @@ class ReadingController extends Controller
 
     public function show(Reading $reading): Response
     {
-        return response(new ReadingResource($reading), 200);
+        return response(new ReadingObject($reading), 200);
     }
 
     public function update(Request $request, Reading $reading): Response
