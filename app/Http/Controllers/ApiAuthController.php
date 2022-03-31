@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Objects\TokenResourceObject;
-use App\Http\Resources\Objects\UserResourceObject;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -41,12 +40,8 @@ class ApiAuthController extends Controller
 
         // TODO Enforce email verification. Don't return access token on registration.
         return response([
-            "data" => new UserResourceObject($user),
-            "related" => [
-                "access_token" => [
-                    "data" => new TokenResourceObject($token)
-                ]
-            ],
+            "user" => new UserResource($user),
+            "token" => $token->accessToken
         ], 201)->header("Cache-Control", "no-store");
     }
 
@@ -65,13 +60,10 @@ class ApiAuthController extends Controller
                 // FIXME: Identified sending plain text password over the internet. Why did I think this was a good idea? Compare the password sent with the hashed password stored in the db. Get the client to hash the password before sending.
                 if (Hash::check($request->password, $user->password)) {
                     $token = $user->createToken(self::TOKEN_NAME);
+
                     return response([
-                        "data" => new UserResourceObject($user),
-                        "related" => [
-                            "access_token" => [
-                                "data" => new TokenResourceObject($token)
-                            ]
-                        ],
+                        "user" => new UserResource($user),
+                        "token" => $token->accessToken
                     ], 200)->header("Cache-Control", "no-store");
 
                 } else { $errorResponse = ["errors" => "Login failed, please check your details."]; }
