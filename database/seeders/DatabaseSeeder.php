@@ -73,6 +73,7 @@ class DatabaseSeeder extends Seeder
                 $p = $probes->random(1)->first()->id;
                 Fermentation::factory()
                     ->state([
+                        "brewed_by" => $u->id,
                         "recipe_id" => $recipes->random(1)->first()->id
                     ])
                     // Readings
