@@ -52,5 +52,6 @@ Route::group(["middleware" => ["cors", "json.response"]], function () {
     Route::get("recipes", [RecipeController::class, 'index']);
     Route::apiResource("users.recipes", RecipeController::class, ["only" => ["index", "show"]])->shallow();
     Route::apiResource("style-category", StyleCategoryController::class);
+    Route::get("styles", [StyleController::class, "index"]);
     Route::apiResource("style-category.styles", StyleController::class)->shallow();
 });
