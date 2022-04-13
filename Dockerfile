@@ -34,4 +34,4 @@ WORKDIR /var/www
 
 USER $user
 
-
+ENTRYPOINT ["./init.sh"]
