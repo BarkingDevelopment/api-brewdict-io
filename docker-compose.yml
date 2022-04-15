@@ -5,21 +5,42 @@ networks:
         name: brewdict
 
 volumes:
-    data:
-        name: db-data
+    db-data:
+    nginx-certs:
+    vhost:
+    html:
+    acme:
+
 
 services:
     proxy:
       image: nginxproxy/nginx-proxy:alpine
       container_name: nginx-proxy
+      restart: always
       ports:
         - 80:80
+        - 443:443
       volumes:
         - /var/run/docker.sock:/tmp/docker.sock:ro
+        - nginx-certs:/etc/nginx/certs
+        - vhost:/etc/nginx/vhost.d
+        - html:/usr/share/nginx/html
       networks:
         brewdict-network:
           aliases:
             - proxy
+
+    cert-service:
+      image: nginxproxy/acme-companion
+      container_name: nginx-cert
+      restart: always
+      volumes_from:
+        - proxy
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - acme:/etc/acme.sh
+      environment:
+        - DEFAULT_EMAIL=hello@maxbarker.uk
 
 #    db:
 #      container_name: brewdict-mariadb
@@ -46,7 +67,9 @@ services:
             dockerfile: Dockerfile
         image: mlbarker/brewdict-api:latest
         container_name: brewdict-api      
-        restart: unless-stopped
+        depends_on:
+          - nginx
+#        restart: unless-stopped
         working_dir: /var/www/
         volumes:
             - ./:/var/www
@@ -59,7 +82,8 @@ services:
         image: nginx:alpine
         container_name: api-nginx
         depends_on:
-          - proxy      
+          - proxy
+          - cert-service
         restart: unless-stopped
         ports:
             - 8000:80
@@ -72,3 +96,4 @@ services:
                     - nginx
         environment:
           - VIRTUAL_HOST=api.brewdict.io
+          - LETSENCRYPT_HOST=api.brewdict.io
