@@ -35,7 +35,7 @@ class RecipeController extends Controller
             "description" => "required|string|max:255",
             "inspiration_id" => "required_without:style_id|prohibits:style_id|exists:recipes,id",
             "style_id" => "required_without:inspiration_id|prohibits:inspiration_id|exists:styles,id",
-            "og" => "required|numeric|gt:og|max:2",
+            "og" => "required|numeric|gt:fg|max:2",
             "fg" => "required|numeric|lt:og|min:1",
             "ibu" => "required|numeric",
             "srm" => "required|numeric",
