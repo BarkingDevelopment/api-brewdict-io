@@ -26,7 +26,8 @@ class RecipeResource extends JsonResource
             "description" => $this->description,
             "inspiration" => !is_null($this->parent) ? new RecipeObject($this->parent) : "null",
             "style" => new StyleResource($this->style),
-            "abv" => $this->abv,
+            "og" => $this->og,
+            "fg" => $this->fg,
             "ibu" => $this->ibu,
             "srm" => $this->srm
         ];

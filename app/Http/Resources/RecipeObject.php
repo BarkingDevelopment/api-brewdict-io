@@ -25,7 +25,8 @@ class RecipeObject extends JsonResource
             "name" => $this->name,
             "description" => $this->description,
             "style" => new StyleResource($this->style),
-            "abv" => $this->abv,
+            "og" => $this->og,
+            "fg" => $this->fg,
             "ibu" => $this->ibu,
             "srm" => $this->srm
         ];
