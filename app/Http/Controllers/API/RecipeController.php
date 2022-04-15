@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enums\RecipeState;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RecipeObject;
 use App\Http\Resources\RecipeResource;
@@ -34,6 +35,10 @@ class RecipeController extends Controller
             "description" => "required|string|max:255",
             "inspiration_id" => "required_without:style_id|prohibits:style_id|exists:recipes,id",
             "style_id" => "required_without:inspiration_id|prohibits:inspiration_id|exists:styles,id",
+            "og" => "required|numeric|gt:og|max:2",
+            "fg" => "required|numeric|lt:og|min:1",
+            "ibu" => "required|numeric",
+            "srm" => "required|numeric",
         ]);
 
         if ($validator->fails())
@@ -47,6 +52,11 @@ class RecipeController extends Controller
             "inspiration_id" => $request->inspiration_id,
             "style_id" => $request->style_id ?? Recipe::where("id", $request->inspiration_id)->first()->style_id,
             "owner_id" => $user->id,
+            "state" => RecipeState::Published(),
+            "og" => $request->og,
+            "fg" => $request->fg,
+            "ibu" => $request->ibu,
+            "srm" => $request->srm,
             ]
         );
 

@@ -22,7 +22,8 @@ class CreateRecipesTable extends Migration
             $table->foreignId("style_id")->constrained("styles");
             $table->foreignId("owner_id")->nullable()->constrained("users");
             $table->enum('state', RecipeState::getValues());
-            $table->float('abv');
+            $table->float('og');
+            $table->float('fg');
             $table->tinyInteger('ibu');
             $table->tinyInteger('srm');
             $table->timestamps();

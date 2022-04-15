@@ -31,7 +31,8 @@ class Recipe extends Model
         'owner_id',
         'inspiration_id',
         'style_id',
-        'abv',
+        'og',
+        'fg',
         'ibu',
         'srm',
     ];
