@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,7 +23,7 @@ class FermentationResource extends JsonResource
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             "recipe" => new RecipeObject($this->recipe),
-            "brewer" => new LoggedInUserObject($this->brewer),
+            "brewer" => new UserObject($this->brewer),
             "equipment" => !is_null($this->equipment) ? new EquipmentResource($this->equipment) : "null",
             "started_at" => $this->started_at,
             "probes" => ProbeObject::collection($this->probes),

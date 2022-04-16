@@ -25,7 +25,7 @@ class ProbeObject extends JsonResource
             "colour" => $this->colour,
             "chip_id" => $this->chip_id,
             "mac" => $this->mac,
-            "owner" => new LoggedInUserObject($this->owner),
+            "owner" => new UserObject($this->owner),
         ];
     }
 }

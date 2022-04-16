@@ -25,7 +25,7 @@ class StyleCategoryResource extends JsonResource
             "description" => $this->description,
             "number" => $this->number,
             "style_guide" => $this->style_guide,
-            "styles" => StyleObject::collection($this->styles)
+            "styles" => StyleResource::collection($this->styles)
         ];
     }
 }
