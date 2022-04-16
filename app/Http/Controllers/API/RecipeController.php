@@ -77,6 +77,10 @@ class RecipeController extends Controller
             "description" => "string|max:255",
             "inspiration_id" => "prohibited",
             "style_id" => "exists:styles,id",
+            "og" => "numeric|gt:fg|max:2",
+            "fg" => "numeric|lt:og|min:1",
+            "ibu" => "numeric",
+            "srm" => "numeric",
         ]);
 
         if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
