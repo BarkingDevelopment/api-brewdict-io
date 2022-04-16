@@ -24,7 +24,7 @@ class RecipeResource extends JsonResource
             "owner" => new UserObject($this->owner),
             "name" => $this->name,
             "description" => $this->description,
-            "inspiration" => !is_null($this->parent) ? new RecipeObject($this->parent) : "null",
+            "inspiration" => !is_null($this->parent) ? new RecipeObject($this->parent) : null,
             "style" => new StyleResource($this->style),
             "og" => $this->og,
             "fg" => $this->fg,
