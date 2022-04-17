@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\Validator;
 
 class FermentationController extends Controller
 {
-    /*
-     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
     public function __construct()
     {
         $this->authorizeResource(Fermentation::class);
@@ -37,7 +35,7 @@ class FermentationController extends Controller
             "recipe_id" => "required|exists:recipes,id",
             "brewed_by" => "prohibited",
             "equipment_id" => "prohibited",
-            "started_At" => "prohibited",
+            "started_at" => "prohibited",
         ]);
 
         if ($validator->fails())
