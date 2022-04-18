@@ -36,6 +36,7 @@ class FermentationController extends Controller
             "brewed_by" => "prohibited",
             "equipment_id" => "prohibited",
             "started_at" => "prohibited",
+            "completed" => "prohibited"
         ]);
 
         if ($validator->fails())
@@ -46,6 +47,7 @@ class FermentationController extends Controller
         $ferment = Fermentation::create([
             "recipe_id" => $request->recipe_id,
             "brewed_by" => $user->id,
+            "completed" => false,
         ]);
 
         return response( new FermentationResource($ferment), 201);
