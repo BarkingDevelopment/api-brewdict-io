@@ -19,7 +19,7 @@ class CreateFermentationsTable extends Migration
             $table->foreignId("brewed_by")->constrained("users");
             $table->foreignId("equipment_id")->nullable()->comment("Equipment Table is not implemented in MVP.")->constrained("equipment");
             $table->timestamp("started_at")->nullable();
-            $table->boolean("completed");
+            $table->boolean("completed")->default(false);
             $table->timestamps();
         });
     }

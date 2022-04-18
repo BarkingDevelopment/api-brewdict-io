@@ -46,8 +46,7 @@ class FermentationController extends Controller
 
         $ferment = Fermentation::create([
             "recipe_id" => $request->recipe_id,
-            "brewed_by" => $user->id,
-            "completed" => false,
+            "brewed_by" => $user->id
         ]);
 
         return response( new FermentationResource($ferment), 201);
