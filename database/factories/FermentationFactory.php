@@ -15,6 +15,7 @@ class FermentationFactory extends Factory
     {
         return [
             "started_at" => $this->faker->dateTime(),
+            "completed" => $this->faker->boolean(20)
         ];
     }
 }

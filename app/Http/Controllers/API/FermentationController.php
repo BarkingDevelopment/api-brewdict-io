@@ -103,6 +103,25 @@ class FermentationController extends Controller
         }
     }
 
+    public function complete(Fermentation $fermentation)
+    {
+        if (is_null($fermentation->started_at))
+        {
+            return response(["errors" => ["Fermentation not started started."]], 403);
+        }
+        else {
+            if ($fermentation->completed){
+                return response(["errors" => ["Fermentation already complete."]], 403);
+            } else{
+                $fermentation->update([
+                    "started_at" => date('Y-m-d H:i:s')
+                ]);
+
+                return response(new FermentationResource($fermentation), 200);
+            }
+        }
+    }
+
     /**
      * Adds a probe to a ferment.
      *

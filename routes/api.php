@@ -41,6 +41,7 @@ Route::group(["middleware" => ["cors", "json.response"]], function () {
         Route::apiResource("users.fermentations", FermentationController::class, ["except" => ["update"]])->shallow();
         Route::apiResource("fermentations.probes", ProbeController::class, ["only" => ["index", "show"]]);
         Route::put("fermentations/{fermentation}/start", [FermentationController::class, "start"]);
+        Route::put("fermentations/{fermentation}/complete", [FermentationController::class, "start"]);
         Route::post("fermentations/{fermentation}/probes/add", [FermentationController::class, "add"]);
         Route::delete("fermentations/{fermentation}/probes/remove", [FermentationController::class, "remove"]);
 
