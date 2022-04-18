@@ -23,9 +23,9 @@ class FermentationController extends Controller
     }
 
 
-    public function index(): Response
+    public function index(User $user): Response
     {
-        $fermentations = Fermentation::all();
+        $fermentations = Fermentation::where("brewed_by", $user->id)->get();
         return response(FermentationObject::collection($fermentations), 200);
     }
 
