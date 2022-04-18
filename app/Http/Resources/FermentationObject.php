@@ -25,7 +25,7 @@ class FermentationObject extends JsonResource
             "brewer" => new UserObject($this->brewer),
             "equipment" => !is_null($this->equipment) ? new EquipmentResource($this->equipment) : null,
             "started_at" => $this->started_at,
-            "completed" => $this->completed
+            "completed" => boolval($this->completed)
         ];
     }
 }
