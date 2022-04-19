@@ -89,12 +89,19 @@ class FermentationController extends Controller
     /**
      * @param Fermentation $fermentation
      */
-    public function start(Fermentation $fermentation)
+    public function start(Request $request, Fermentation $fermentation)
     {
         if (is_null($fermentation->started_at))
         {
+            $validator = Validator::make($request->all(), [
+                "og" => "numeric|min:1|max:2",
+            ]);
+
+            if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
+
             $fermentation->update([
-                "started_at" => date('Y-m-d H:i:s')
+                "started_at" => date('Y-m-d H:i:s'),
+                "og" => $request->og
             ]);
 
             return response(new FermentationResource($fermentation), 200);

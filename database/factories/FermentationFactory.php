@@ -15,6 +15,7 @@ class FermentationFactory extends Factory
     {
         return [
             "started_at" => $this->faker->dateTime(),
+            "og" => $this->faker->randomFloat(5, 1.03, 1.05),
             "completed" => $this->faker->boolean(20)
         ];
     }
