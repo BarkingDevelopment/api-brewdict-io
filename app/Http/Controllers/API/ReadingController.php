@@ -37,7 +37,7 @@ class ReadingController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "type" => "required|alpha",
-            "recorded_at" => "required|date|before_or_equal:now",
+            "recorded_at" => "required|date",
             "value" => "required|numeric",
             "units" => "required|alpha_num",
         ]);
