@@ -40,6 +40,7 @@ Route::group(["middleware" => ["cors", "json.response"]], function () {
 
         Route::apiResource("users.fermentations", FermentationController::class, ["except" => ["update"]])->shallow();
         Route::apiResource("fermentations.probes", ProbeController::class, ["only" => ["index", "show"]]);
+        Route::apiResource("fermentations.readings", ReadingController::class, ["except" => ["show", "update"]])->shallow();
         Route::put("fermentations/{fermentation}/start", [FermentationController::class, "start"]);
         Route::put("fermentations/{fermentation}/complete", [FermentationController::class, "start"]);
         Route::post("fermentations/{fermentation}/probes/add", [FermentationController::class, "add"]);
@@ -47,7 +48,7 @@ Route::group(["middleware" => ["cors", "json.response"]], function () {
 
         Route::apiResource("users.probes", ProbeController::class)->shallow();
         Route::apiResource("probes.states", ProbeStateController::class, ["except" => ["update", "destroy"]])->shallow();
-        Route::apiResource("probes.readings", ReadingController::class, ["except" => ["show", "update", "destroy"]])->shallow();
+        //Route::apiResource("probes.readings", ReadingController::class, ["except" => ["show", "update", "destroy"]])->shallow();
     });
 
     Route::get("recipes", [RecipeController::class, 'index']);

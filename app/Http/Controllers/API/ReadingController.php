@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Objects\ReadingResourceObject;
-use App\Http\Resources\Collections\ReadingCollection;
 use App\Http\Resources\ReadingObject;
+use App\Http\Resources\ReadingResource;
+use App\Models\Fermentation;
 use App\Models\Reading;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 
 /**
@@ -16,41 +17,58 @@ use Illuminate\Http\Response;
  */
 class ReadingController extends Controller
 {
-    /*
-     * BUG: Policy disabled due to some actions being denied when they shouldn't be.
+    // BUG: Policy disabled due to some actions being denied when they shouldn't be.
     public function __construct()
     {
         $this->authorizeResource(Reading::class);
     }
-    */
 
-    public function index(): Response
+    public function index(Fermentation $fermentation): Response
     {
-        $readings = Reading::all();
-        return response(new ReadingCollection($readings), 200);
+        $readings = Reading::where("fermentation_id", $fermentation->id);
+        return response(ReadingObject::collection($readings), 200);
     }
 
     /**
      * TODO Adaptor for type of probe.
      * TODO Entry value and unit verification.
      */
-    public function store(Request $request): Response
+    public function store(Fermentation $fermentation, Request $request): Response
     {
-        $reading = Reading::create($request->all());
+        $validator = Validator::make($request->all(), [
+            "type" => "required|alpha",
+            "recorded_at" => "required|date|before_or_equal:now",
+            "value" => "required|numeric",
+            "units" => "required|alpha_num",
+        ]);
 
-        return response(new ReadingResourceObject($reading), 201);
+        if ($validator->fails())
+        {
+            return response(["errors" => $validator->errors()->all()], 422);
+        }
+
+        $reading = Reading::create([
+            "fermentation_id" => $fermentation->id,
+            "type" => $request->type,
+            "recorded_at" => $request->recorded_at,
+            "value" => $request->value,
+            "units" => $request->units
+
+        ]);
+
+        return response(new ReadingResource($reading), 201);
     }
 
     public function show(Reading $reading): Response
     {
-        return response(new ReadingObject($reading), 200);
+        return response(new ReadingResource($reading), 200);
     }
 
     public function update(Request $request, Reading $reading): Response
     {
         $reading->update($request->all());
 
-        return response(new ReadingResourceObject($reading), 200);
+        return response(new ReadingResource($reading), 200);
     }
 
     public function destroy(Reading $reading): Response
