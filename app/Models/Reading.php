@@ -17,6 +17,21 @@ class Reading extends Model
      */
     protected $table = 'readings';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'fermentation_id',
+        'type',
+        'recorded_at',
+        'probe_id',
+        'value',
+        'units',
+    ];
+
+
     /*
      * Physical relationships.
      */
