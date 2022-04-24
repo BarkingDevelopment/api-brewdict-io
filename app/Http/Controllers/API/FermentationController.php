@@ -17,10 +17,12 @@ use Illuminate\Support\Facades\Validator;
 
 class FermentationController extends Controller
 {
+    /*
     public function __construct()
     {
         $this->authorizeResource(Fermentation::class);
     }
+    */
 
 
     public function index(User $user): Response
