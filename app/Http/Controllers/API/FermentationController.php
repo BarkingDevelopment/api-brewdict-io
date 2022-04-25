@@ -8,6 +8,7 @@ use App\Http\Resources\FermentationResource;
 use App\Models\Fermentation;
 use App\Models\ProbeAssignment;
 use App\Models\Probe;
+use App\Models\Reading;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -104,6 +105,14 @@ class FermentationController extends Controller
             $fermentation->update([
                 "started_at" => date('Y-m-d H:i:s'),
                 "og" => $request->og
+            ]);
+
+            Reading::create([
+                "fermentation_id" => $fermentation->id,
+                "type" => "density",
+                "recorded_at" => date('Y-m-d H:i:s'),
+                "value" => $request->og,
+                "units" => "SG"
             ]);
 
             return response(new FermentationResource($fermentation), 200);
