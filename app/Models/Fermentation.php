@@ -29,6 +29,7 @@ class Fermentation extends Model
         'recipe_id',
         'brewed_by',
         'started_at',
+        'og'
     ];
 
     /*

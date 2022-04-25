@@ -96,7 +96,7 @@ class FermentationController extends Controller
         if (is_null($fermentation->started_at))
         {
             $validator = Validator::make($request->all(), [
-                "og" => "numeric|min:1|max:2",
+                "og" => "required|numeric|min:1|max:2",
             ]);
 
             if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
