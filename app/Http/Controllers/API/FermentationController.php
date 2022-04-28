@@ -98,6 +98,7 @@ class FermentationController extends Controller
         {
             $validator = Validator::make($request->all(), [
                 "og" => "required|numeric|min:1|max:2",
+                "temp" => "required|numeric"
             ]);
 
             if ($validator->fails()) return response(["errors" => $validator->errors()->all()], 422);
@@ -113,6 +114,14 @@ class FermentationController extends Controller
                 "recorded_at" => date('Y-m-d H:i:s'),
                 "value" => $request->og,
                 "units" => "SG"
+            ]);
+
+            Reading::create([
+                "fermentation_id" => $fermentation->id,
+                "type" => "density",
+                "recorded_at" => date('Y-m-d H:i:s'),
+                "value" => $request->temp,
+                "units" => "C"
             ]);
 
             return response(new FermentationResource($fermentation), 200);
