@@ -118,7 +118,7 @@ class FermentationController extends Controller
 
             Reading::create([
                 "fermentation_id" => $fermentation->id,
-                "type" => "density",
+                "type" => "temperature",
                 "recorded_at" => date('Y-m-d H:i:s'),
                 "value" => $request->temp,
                 "units" => "C"
